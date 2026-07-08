@@ -3,7 +3,8 @@ name: Deploy to Surge
 on:
   push:
     branches:
-      - main 
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,7 +16,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install Surge
         run: npm install -g surge
