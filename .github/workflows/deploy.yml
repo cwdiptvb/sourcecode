@@ -3,8 +3,7 @@ name: Deploy to Surge
 on:
   push:
     branches:
-      - main  # Change to master if your default branch uses that name
-
+      - main 
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,6 +21,7 @@ jobs:
         run: npm install -g surge
 
       - name: Deploy to Surge
-        # The "." tells Surge to deploy your root directory directly
-        run: surge . your-custom-domain.surge.sh --token ${{ secrets.SURGE_TOKEN }} --login ${{ secrets.SURGE_LOGIN }}
-
+        run: surge . iptvpro.ddns.net
+        env:
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
