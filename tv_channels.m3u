@@ -2,7 +2,7 @@
 #PLAYLIST:Free Live TV
 #EXTIPL:Free Live TV
 #EXTINF:-1 tvg-id="A.and.E.HD.East.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/a-and-e-us.png" tvg-name="A&E US Eastern Feed" group-title="Live",A&E US Eastern Feed
-http://iptvpro.ddns.net/stream/ae/index.m3u8
+http://206.212.244.63/1/index.m3u8
 #EXTINF:-1 tvg-id="WABC.ABC.7.New.York.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/us-local/abc-7-wabc-us.png" tvg-name="ABC 7 New York NY (WABC)" group-title="Live",ABC 7 New York NY (WABC)
 http://iptvpro.ddns.net/stream/abc-7-ny/index.m3u8
 #EXTINF:-1 tvg-id="ACC.Network.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/acc-network-us.png" tvg-name="ACC Network" group-title="Live",ACC Network
