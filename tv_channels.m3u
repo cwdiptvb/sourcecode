@@ -156,9 +156,9 @@ http://23.237.104.106:8080/USA_GOLF/index.m3u8
 #EXTINF:-1 tvg-id="Hallmark.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hallmark-channel-us.png" tvg-name="Hallmark Eastern Feed" group-title="Live",Hallmark Eastern Feed
 http://23.237.104.106:8080/USA_HALLMARK/index.m3u8
 #EXTINF:-1 tvg-id="Hallmark.Family.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hallmark-family-us.png" tvg-name="Hallmark Family HD" group-title="Live",Hallmark Family HD
-null
+http://206.212.244.63/85/index.m3u8
 #EXTINF:-1 tvg-id="Hallmark.Mystery.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hallmark-movies-and-mysteries-us.png" tvg-name="Hallmark Mystery Eastern HD" group-title="Live",Hallmark Mystery Eastern HD
-null
+http://206.212.244.63/86/index.m3u8
 #EXTINF:-1 tvg-id="HBO.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hbo-us.png" tvg-name="HBO" group-title="Live",HBO
 http://23.237.104.106:8080/USA_HBO/index.m3u8
 #EXTINF:-1 tvg-id="HBO2.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hbo2-us.png" tvg-name="HBO 2 Eastern Feed" group-title="Live",HBO 2 Eastern Feed
@@ -172,9 +172,9 @@ null
 #EXTINF:-1 tvg-id="HBO.Zone.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hbo-zone-us.png" tvg-name="HBO Zone HD East" group-title="Live",HBO Zone HD East
 http://23.237.104.106:8080/USA_HBO_ZONE/index.m3u8
 #EXTINF:-1 tvg-id="HGTV.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hgtv-us.png" tvg-name="HGTV USA Eastern Feed" group-title="Live",HGTV USA Eastern Feed
-null
+http://206.212.244.63/89/index.m3u8
 #EXTINF:-1 tvg-id="History.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/history-us.png" tvg-name="History Channel US Eastern Feed" group-title="Live",History Channel US Eastern Feed
-null
+http://206.212.244.63/91/index.m3u8
 #EXTINF:-1 tvg-id="HLN.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hln-us.png" tvg-name="HLN" group-title="Live",HLN
 http://23.237.104.106:8080/USA_HLN/index.m3u8
 #EXTINF:-1 tvg-id="IFC.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/ifc-us.png" tvg-name="Independent Film Channel US" group-title="Live",Independent Film Channel US
