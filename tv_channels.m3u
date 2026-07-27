@@ -188,23 +188,23 @@ http://23.237.104.106:8080/USA_LMN/index.m3u8
 #EXTINF:-1 tvg-id="Lifetime.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/lifetime-us.png" tvg-name="Lifetime Network US Eastern Feed" group-title="Live",Lifetime Network US Eastern Feed
 http://206.212.244.63/103/index.m3u8
 #EXTINF:-1 tvg-id="Logo.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/logo-tv-us.png" tvg-name="LOGO East" group-title="Live",LOGO East
-null
+http://206.212.244.63/4242/index.m3u
 #EXTINF:-1 tvg-id="Marquee.Sports.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/marquee-sports-network-us.png" tvg-name="Marquee Sports Network" group-title="Live",Marquee Sports Network
-null
+https://gpuserver3.tier1streams.com/MARQUEE_SPORTS_NETWORK/index.m3u8
 #EXTINF:-1 tvg-id="MeTV.Toons.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/metv-toons-us.png" tvg-name="MeTV Toons (WJLP2) New Jersey" group-title="Live",MeTV Toons (WJLP2) New Jersey
-null
+http://206.212.244.63/112/index.m3u8
 #EXTINF:-1 tvg-id="MeTV.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/metv-us.png" tvg-name="MeTV Wjlp New Jerseynew York" group-title="Live",MeTV Wjlp New Jerseynew York
-null
+http://206.212.244.63/110/index.m3u8
 #EXTINF:-1 tvg-id="MASN.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/masn-us.png" tvg-name="Midatlantic Sports Network" group-title="Live",Midatlantic Sports Network
 null
 #EXTINF:-1 tvg-id="MLB.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/mlb-network-us.png" tvg-name="MLB Network" group-title="Live",MLB Network
-null
+https://gpuserver3.tier1streams.com/MLB_Network/index.m3u8
 #EXTINF:-1 tvg-id="Monumental.Sports.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/monumental-sports-network-us.png" tvg-name="Monumental Sports Network" group-title="Live",Monumental Sports Network
 null
 #EXTINF:-1 tvg-id="MoreMax.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/moremax-us.png" tvg-name="MoreMax Eastern" group-title="Live",MoreMax Eastern
 http://23.237.104.106:8080/USA_MOREMAX/index.m3u8
 #EXTINF:-1 tvg-id="Motor.Trend.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/motortrend-us.png" tvg-name="Motor Trend HD" group-title="Live",Motor Trend HD
-null
+http://gpuserver3.tier1streams.com/MOTORTREND/index.m3u8
 #EXTINF:-1 tvg-id="MovieMax.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/moviemax-us.png" tvg-name="MovieMax (Max 6) East" group-title="Live",MovieMax (Max 6) East
 null
 #EXTINF:-1 tvg-id="MSG.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/msg-us.png" tvg-name="MSG Madison Square Gardens" group-title="Live",MSG Madison Square Gardens
