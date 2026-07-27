@@ -6,7 +6,7 @@ http://206.212.244.63/1/index.m3u8
 #EXTINF:-1 tvg-id="WABC.ABC.7.New.York.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/us-local/abc-7-wabc-us.png" tvg-name="ABC 7 New York NY (WABC)" group-title="Live",ABC 7 New York NY (WABC)
 https://gpuserver3.tier1streams.com/ABC/index.m3u8
 #EXTINF:-1 tvg-id="ACC.Network.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/acc-network-us.png" tvg-name="ACC Network" group-title="Live",ACC Network
-http://23.237.104.106:8080/USA_ACCN/index.m3u8
+http://206.212.244.63/2486/index.m3u8
 #EXTINF:-1 tvg-id="AMC.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/amc-us.png" tvg-name="AMC" group-title="Live",AMC
 http://190.11.225.124:5000/live/amc_hd/playlist.m3u8
 #EXTINF:-1 tvg-id="American.Heroes.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/american-heroes-channel-us.png" tvg-name="American Heroes Channel" group-title="Live",American Heroes Channel
