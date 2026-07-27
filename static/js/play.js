@@ -946,56 +946,214 @@ ${rawUrl}
   return URL.createObjectURL(blob);
 }
 function initializePlayer(streamURL) {
-      const player = jwplayer("my-video");
+  const player = jwplayer("my-video");
 
-      player.setup({
-        file: streamURL,
-        type: "application/x-mpegURL", // always HLS now — real or synthetic
-        width: "100%",
-        aspectratio: "16:9",
-        autostart: true,
-        primary: "html5",
-        preload: "auto",
-        mute: false
-      });
+  player.setup({
+    file: streamURL,
+    type: "application/x-mpegURL",
+    width: "100%",
+    aspectratio: "16:9",
+    autostart: true,
+    primary: "html5",
+    preload: "auto",
+    mute: false
+  });
 
-      // Safety net: if the player hasn't shown anything after 12 s, surface an error
-      // instead of leaving the user staring at a loading spinner forever.
-      const stallTimer = setTimeout(function() {
-        if ($("#loading-container").length) {
-          console.warn("Player stall timeout — stream may be unreachable or codec unsupported.");
-          showError("stall_timeout");
-        }
-      }, 12000);
+  let revealed = false;
+  let playbackCheckTimer = null;
+  let liveStream = true;
 
-      function revealPlayer() {
-        clearTimeout(stallTimer);
-        $("#loading-container").remove();
-        $("#my-video").show();
+  // Give longer HLS segments enough time to begin playback.
+  const stallTimer = setTimeout(function() {
+    if ($("#loading-container").length) {
+      console.warn(
+        "Player stall timeout — stream may be unreachable or codec unsupported."
+      );
+      showError("stall_timeout");
+    }
+  }, 30000);
+
+  function showPlayerLoading() {
+    if ($("#loading-container").length) {
+      $("#loading-container").show();
+    }
+  }
+
+  function revealPlayer() {
+    if (revealed) return;
+
+    revealed = true;
+    clearTimeout(stallTimer);
+
+    if (playbackCheckTimer) {
+      clearInterval(playbackCheckTimer);
+      playbackCheckTimer = null;
+    }
+
+    $("#loading-container").fadeOut(200, function() {
+      $(this).remove();
+    });
+
+    $("#my-video").show();
+  }
+
+  function hideLiveSeekControls() {
+    if (!liveStream) return;
+
+    const root = document.getElementById("my-video");
+    if (!root) return;
+
+    /*
+     * Hide JW Player's live seek bar/timeline.
+     *
+     * We intentionally don't use duration === Infinity here because
+     * some IPTV HLS streams report a finite duration even though they
+     * are continuously updating live playlists.
+     */
+    root.querySelectorAll(
+      ".jw-slider-time, " +
+      ".jw-controlbar .jw-time-tip, " +
+      ".jw-controlbar .jw-progress"
+    ).forEach(function(el) {
+      el.style.display = "none";
+    });
+  }
+
+  /*
+   * Determine whether the HLS source is live.
+   *
+   * A live HLS media playlist normally does NOT contain #EXT-X-ENDLIST.
+   */
+  fetch(streamURL, { cache: "no-store" })
+    .then(function(res) {
+      if (!res.ok) {
+        throw new Error("HTTP " + res.status);
       }
 
-      player.on("ready", revealPlayer);
-      player.on("firstFrame", revealPlayer);
-      player.on("buffer", function(e){
-        if(e && e.newstate==="playing"){ revealPlayer(); }
-      });
-      player.on("play", revealPlayer);
+      return res.text();
+    })
+    .then(function(playlistText) {
+      liveStream = !/#EXT-X-ENDLIST\b/i.test(playlistText);
+      hideLiveSeekControls();
+    })
+    .catch(function(err) {
+      console.warn(
+        "Could not inspect HLS playlist for live/VOD status:",
+        err
+      );
 
-      player.on("fullscreen", function (e) {
-        const videoElement = document.getElementById("my-video");
-        if (e.fullscreen) {
-          videoElement.style.border = "none";
-          videoElement.style.borderRadius = "0";
-        } else {
-          videoElement.style.border = "2px solid #00ffff";
-          videoElement.style.borderRadius = "8px";
-        }
-      });
+      // IPTV sources are assumed to be live if inspection fails.
+      liveStream = true;
+      hideLiveSeekControls();
+    });
 
-      player.on("error", function (e) {
-        console.error("Player error:", e.message || e);
-        showError(e.code || "unknown"); 
-      });
+  player.on("ready", function() {
+    hideLiveSeekControls();
 
-      jwplayer_hls_provider.attach();
+    const root = document.getElementById("my-video");
+    const video = root && root.querySelector("video");
+
+    if (!video) {
+      console.warn("JW Player video element not found.");
+      return;
     }
+
+    let previousTime = video.currentTime || 0;
+    let started = false;
+
+    /*
+     * The important part:
+     *
+     * Do NOT reveal the player merely because JW Player says:
+     *   ready
+     *   firstFrame
+     *   play
+     *
+     * Instead, verify that currentTime is actually advancing.
+     *
+     * This prevents a frozen first frame from being displayed while
+     * the HLS player is still waiting for playable media.
+     */
+    playbackCheckTimer = setInterval(function() {
+      if (started) return;
+
+      const currentTime = video.currentTime || 0;
+
+      if (
+        !video.paused &&
+        !video.ended &&
+        video.readyState >= 2 &&
+        currentTime > previousTime + 0.05
+      ) {
+        started = true;
+        revealPlayer();
+      }
+
+      previousTime = currentTime;
+
+      // JW Player can rebuild its controls during playback.
+      // Reapply the live-stream rule periodically.
+      hideLiveSeekControls();
+
+    }, 100);
+
+    /*
+     * "playing" is the strongest indication that the browser has
+     * actually started playback.
+     */
+    video.addEventListener("playing", revealPlayer);
+
+    /*
+     * If the stream hasn't started yet, keep the loading screen.
+     */
+    video.addEventListener("waiting", showPlayerLoading);
+    video.addEventListener("stalled", showPlayerLoading);
+
+    /*
+     * JW Player may create/recreate the timeline when duration changes.
+     */
+    video.addEventListener("canplay", hideLiveSeekControls);
+    video.addEventListener("durationchange", hideLiveSeekControls);
+  });
+
+  /*
+   * IMPORTANT:
+   *
+   * Do NOT call revealPlayer() here.
+   *
+   * "play" means the browser was asked to play, not that it is
+   * actually receiving/decoding frames.
+   */
+  player.on("play", showPlayerLoading);
+
+  /*
+   * Same idea for firstFrame. Some HLS streams can expose a first
+   * decoded frame before the stream is genuinely advancing.
+   */
+  player.on("firstFrame", showPlayerLoading);
+
+  player.on("buffer", function(e) {
+    if (!e || e.newstate !== "playing") {
+      showPlayerLoading();
+    }
+  });
+
+  player.on("fullscreen", function(e) {
+    const videoElement = document.getElementById("my-video");
+
+    if (e.fullscreen) {
+      videoElement.style.border = "none";
+      videoElement.style.borderRadius = "0";
+    } else {
+      videoElement.style.border = "2px solid #00ffff";
+      videoElement.style.borderRadius = "8px";
+    }
+  });
+
+  player.on("error", function(e) {
+    console.error("Player error:", e.message || e);
+    showError(e.code || "unknown");
+  });
+
+  jwplayer_hls_provider.attach();
+}
