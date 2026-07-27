@@ -1047,6 +1047,108 @@ function initializePlayer(streamURL) {
       hideLiveSeekControls();
     });
 
+ function initializePlayer(streamURL) {
+  const player = jwplayer("my-video");
+
+  player.setup({
+    file: streamURL,
+    type: "application/x-mpegURL",
+    width: "100%",
+    aspectratio: "16:9",
+    autostart: true,
+    primary: "html5",
+    preload: "auto",
+    mute: false
+  });
+
+  let revealed = false;
+  let playbackCheckTimer = null;
+  let liveStream = true;
+
+  // Give longer HLS segments enough time to begin playback.
+  const stallTimer = setTimeout(function() {
+    if ($("#loading-container").length) {
+      console.warn(
+        "Player stall timeout — stream may be unreachable or codec unsupported."
+      );
+      showError("stall_timeout");
+    }
+  }, 30000);
+
+  function showPlayerLoading() {
+    if ($("#loading-container").length) {
+      $("#loading-container").show();
+    }
+  }
+
+  function revealPlayer() {
+    if (revealed) return;
+
+    revealed = true;
+    clearTimeout(stallTimer);
+
+    if (playbackCheckTimer) {
+      clearInterval(playbackCheckTimer);
+      playbackCheckTimer = null;
+    }
+
+    $("#loading-container").fadeOut(200, function() {
+      $(this).remove();
+    });
+
+    $("#my-video").show();
+  }
+
+  function hideLiveSeekControls() {
+    if (!liveStream) return;
+
+    const root = document.getElementById("my-video");
+    if (!root) return;
+
+    /*
+     * Hide JW Player's live seek bar/timeline.
+     *
+     * We intentionally don't use duration === Infinity here because
+     * some IPTV HLS streams report a finite duration even though they
+     * are continuously updating live playlists.
+     */
+    root.querySelectorAll(
+      ".jw-slider-time, " +
+      ".jw-controlbar .jw-time-tip, " +
+      ".jw-controlbar .jw-progress"
+    ).forEach(function(el) {
+      el.style.display = "none";
+    });
+  }
+
+  /*
+   * Determine whether the HLS source is live.
+   *
+   * A live HLS media playlist normally does NOT contain #EXT-X-ENDLIST.
+   */
+  fetch(streamURL, { cache: "no-store" })
+    .then(function(res) {
+      if (!res.ok) {
+        throw new Error("HTTP " + res.status);
+      }
+
+      return res.text();
+    })
+    .then(function(playlistText) {
+      liveStream = !/#EXT-X-ENDLIST\b/i.test(playlistText);
+      hideLiveSeekControls();
+    })
+    .catch(function(err) {
+      console.warn(
+        "Could not inspect HLS playlist for live/VOD status:",
+        err
+      );
+
+      // IPTV sources are assumed to be live if inspection fails.
+      liveStream = true;
+      hideLiveSeekControls();
+    });
+
   player.on("ready", function() {
     hideLiveSeekControls();
 
