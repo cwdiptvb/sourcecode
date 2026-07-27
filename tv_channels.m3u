@@ -67,6 +67,8 @@ http://23.237.104.106:8080/USA_DISCOVERY/index.m3u8
 http://40.160.24.52/DISCOVERY_FAMILY/index.m3u8
 #EXTINF:-1 tvg-id="Discovery.Life.Channel.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/discovery-life-us.png" tvg-name="Discovery Life Channel" group-title="Live",Discovery Life Channel
 http://40.160.24.52/DISCOVERY_LIFE/index.m3u8
+#EXTINF:-1 tvg-id="MOTORTREND.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/discovery-turbo-us.png" tvg-name="Discovery Turbo" group-title="Live",Discovery Turbo
+http://gpuserver3.tier1streams.com/MOTORTREND/index.m3u8
 #EXTINF:-1 tvg-id="Disney.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/disney-channel-us.png" tvg-name="Disney Eastern Feed" group-title="Live",Disney Eastern Feed
 http://40.160.24.52/Disney_Channel_HD/index.m3u8
 #EXTINF:-1 tvg-id="Disney.Junior.HD.us2" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/2024_Disney_Jr._Logo.svg/960px-2024_Disney_Jr._Logo.svg.png" tvg-name="Disney Junior USA East" group-title="Live",Disney Junior USA East
@@ -203,8 +205,6 @@ https://gpuserver3.tier1streams.com/MLB_Network/index.m3u8
 null
 #EXTINF:-1 tvg-id="MoreMax.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/moremax-us.png" tvg-name="MoreMax Eastern" group-title="Live",MoreMax Eastern
 http://23.237.104.106:8080/USA_MOREMAX/index.m3u8
-#EXTINF:-1 tvg-id="Motor.Trend.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/motortrend-us.png" tvg-name="Motor Trend HD" group-title="Live",Motor Trend HD
-http://gpuserver3.tier1streams.com/MOTORTREND/index.m3u8
 #EXTINF:-1 tvg-id="MovieMax.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/moviemax-us.png" tvg-name="MovieMax (Max 6) East" group-title="Live",MovieMax (Max 6) East
 null
 #EXTINF:-1 tvg-id="MSG.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/msg-us.png" tvg-name="MSG Madison Square Gardens" group-title="Live",MSG Madison Square Gardens
