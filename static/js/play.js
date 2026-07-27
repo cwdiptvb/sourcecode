@@ -31,7 +31,7 @@ async function probeStreamCodecs(m3u8Url) {
       // mp4a.6b = MP2 audio in MPEG-4 container
       if (codecs.includes('mp2v') || codecs.includes('mp4v.20.2') ||
           codecs.includes('mp4a.6b') || codecs.includes('ac-3')) {
-        console.log(`🔍 MP2 codec detected via CODECS attribute: ${codecs}`);
+        console.log(`ð MP2 codec detected via CODECS attribute: ${codecs}`);
         return { needsTranscode: true, reason: `codec_attr:${codecs}` };
       }
     }
@@ -63,7 +63,7 @@ async function probeStreamCodecs(m3u8Url) {
       });
     } catch (fetchErr) {
       clearTimeout(probeTimeout);
-      // Timed out or network error during probe — fall back to native player
+      // Timed out or network error during probe â fall back to native player
       return { needsTranscode: false, reason: 'segment_probe_timeout' };
     }
     clearTimeout(probeTimeout);
@@ -77,7 +77,7 @@ async function probeStreamCodecs(m3u8Url) {
     for (let i = 0; i < bytes.length - 4; i++) {
       if (bytes[i] === 0x00 && bytes[i+1] === 0x00 &&
           bytes[i+2] === 0x01 && bytes[i+3] === 0xB3) {
-        console.log(`🔍 MPEG-2 Video start code detected at byte ${i}`);
+        console.log(`ð MPEG-2 Video start code detected at byte ${i}`);
         return { needsTranscode: true, reason: 'mpeg2_video_startcode' };
       }
     }
@@ -90,7 +90,7 @@ async function probeStreamCodecs(m3u8Url) {
         // MPEG-1 Layer II: 1111 1111 1111 1101 (0xFFFD)
         // MPEG-2 Layer II: 1111 1111 1111 0101 (0xFFF5)
         if (secondByte === 0xFD || secondByte === 0xFC || secondByte === 0xF5) {
-          console.log(`🔍 MP2 Audio sync word detected at byte ${i}: FF ${secondByte.toString(16).toUpperCase()}`);
+          console.log(`ð MP2 Audio sync word detected at byte ${i}: FF ${secondByte.toString(16).toUpperCase()}`);
           return { needsTranscode: true, reason: 'mp2_audio_sync' };
         }
       }
@@ -99,7 +99,7 @@ async function probeStreamCodecs(m3u8Url) {
     return { needsTranscode: false, reason: 'no_mp2_detected' };
 
   } catch (err) {
-    console.warn('⚠️ Codec probe error (falling back to native player):', err);
+    console.warn('â ï¸ Codec probe error (falling back to native player):', err);
     return { needsTranscode: false, reason: 'probe_error' };
   }
 }
@@ -128,7 +128,7 @@ function setFfmpegStatus(text, sub, progressPct) {
  * @returns {Promise<{ffmpeg: object, fetchFile: Function}>}
  */
 async function loadFfmpegWasm() {
-  // ffmpeg.wasm v0.12.x — ESM CDN build
+  // ffmpeg.wasm v0.12.x â ESM CDN build
   const FFMPEG_CDN = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/esm/index.js';
   const FFMPEG_UTIL_CDN = 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js';
 
@@ -147,7 +147,7 @@ async function loadFfmpegWasm() {
   });
 
   ffmpeg.on('progress', ({ progress, time }) => {
-    // progress is 0–1 during file-based transcoding
+    // progress is 0â1 during file-based transcoding
     // For live streaming we track manually instead
     const pct = Math.min(Math.round(progress * 100), 99);
     if (pct > 0) {
@@ -157,7 +157,7 @@ async function loadFfmpegWasm() {
 
   setFfmpegStatus('Initializing ffmpeg.wasm...', 'Loading MPEG-2 decoders...', 30);
 
-  // Load the core WASM — auto-selects multi-thread vs single-thread
+  // Load the core WASM â auto-selects multi-thread vs single-thread
   const coreUrl = typeof SharedArrayBuffer !== 'undefined'
     ? 'https://cdn.jsdelivr.net/npm/@ffmpeg/core-mt@0.12.6/dist/esm/ffmpeg-core.js'
     : 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.js';
@@ -165,7 +165,7 @@ async function loadFfmpegWasm() {
   await ffmpeg.load({ coreURL: coreUrl });
 
   setFfmpegStatus('ffmpeg.wasm ready', 'MP2 decoder loaded.', 60);
-  console.log('✅ ffmpeg.wasm loaded successfully');
+  console.log('â ffmpeg.wasm loaded successfully');
 
   return { ffmpeg, fetchFile };
 }
@@ -194,7 +194,7 @@ async function resolveHlsSegments(m3u8Url) {
     return resolveHlsSegments(variantUrl);
   }
 
-  // Media playlist — extract segment URLs
+  // Media playlist â extract segment URLs
   const segments = text.split('\n')
     .filter(l => l.trim() && !l.startsWith('#'))
     .map(l => l.trim().startsWith('http') ? l.trim() : baseUrl + l.trim());
@@ -209,7 +209,7 @@ async function resolveHlsSegments(m3u8Url) {
  * Approach:
  *   1. Download each .ts segment
  *   2. Write to ffmpeg.wasm virtual FS
- *   3. Transcode: mp2v → H.264, mp2a → AAC, mux to fMP4
+ *   3. Transcode: mp2v â H.264, mp2a â AAC, mux to fMP4
  *   4. Append to MediaSource SourceBuffer
  *
  * The fMP4 (fragmented MP4) container is used because it is the only
@@ -236,7 +236,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
   await new Promise(resolve => {
     mediaSource.addEventListener('sourceopen', () => {
       mediaSourceOpen = true;
-      // fMP4 with H.264 + AAC — universally supported via MSE
+      // fMP4 with H.264 + AAC â universally supported via MSE
       sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
       sourceBuffer.mode = 'sequence';
 
@@ -267,7 +267,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
     try {
       sourceBuffer.appendBuffer(chunk);
     } catch (err) {
-      console.error('❌ SourceBuffer append error:', err);
+      console.error('â SourceBuffer append error:', err);
       isAppending = false;
     }
   }
@@ -292,8 +292,8 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
       for (const segUrl of newSegments) {
         try {
           setFfmpegStatus(
-            'Transcoding MP2 → H.264/AAC',
-            `Segment ${segmentIndex + 1} — decoding MPEG-2...`,
+            'Transcoding MP2 â H.264/AAC',
+            `Segment ${segmentIndex + 1} â decoding MPEG-2...`,
             80
           );
 
@@ -307,11 +307,11 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
 
           // Transcode command:
           //   -i input.ts                 input MPEG-TS
-          //   -c:v libx264               transcode MPEG-2 video → H.264
+          //   -c:v libx264               transcode MPEG-2 video â H.264
           //   -preset ultrafast          minimize latency
           //   -tune zerolatency          optimize for live streaming
           //   -crf 23                    quality (lower = better, 18-28 typical)
-          //   -c:a aac                   transcode MP2 audio → AAC
+          //   -c:a aac                   transcode MP2 audio â AAC
           //   -b:a 128k                  audio bitrate
           //   -ar 44100                  resample audio to 44.1kHz (browser-safe)
           //   -movflags frag_keyframe+empty_moov+default_base_moof
@@ -354,7 +354,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
           }
 
         } catch (segErr) {
-          console.error(`❌ Failed to transcode segment ${segmentIndex}:`, segErr);
+          console.error(`â Failed to transcode segment ${segmentIndex}:`, segErr);
           segmentIndex++; // Skip failed segment and continue
         }
       }
@@ -367,11 +367,11 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         segmentQueue.push(null);
         flushQueue();
         endOfStream = true;
-        console.log('✅ VOD transcode complete.');
+        console.log('â VOD transcode complete.');
       }
 
     } catch (err) {
-      console.error('❌ Segment fetch/processing error:', err);
+      console.error('â Segment fetch/processing error:', err);
       // Retry after 5 seconds on live streams
       if (isLive) {
         setTimeout(fetchAndTranscodeSegments, 5000);
@@ -450,7 +450,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         TIME_OFFSET = adjustedServerTime - after;
         LAST_TIME_SYNC = Date.now();
         
-        console.log(`✅ Time synchronized. Offset: ${TIME_OFFSET}ms`);
+        console.log(`â Time synchronized. Offset: ${TIME_OFFSET}ms`);
         
         // Update clock and schedule display after time sync
         updateClock();
@@ -458,7 +458,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
           renderSchedule();
         }
       } catch (error) {
-        console.warn('⚠️ Time sync failed, using local time:', error);
+        console.warn('â ï¸ Time sync failed, using local time:', error);
         TIME_OFFSET = 0;
       }
     }
@@ -506,7 +506,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
                     const epgUrlMatch = lines[i].match(/(?:url-tvg|x-tvg-url)="([^"]+)"/i);
                     if (epgUrlMatch && epgUrlMatch[1]) {
                         XMLTV_URL = epgUrlMatch[1];
-                        console.log(`✅ Dynamically loaded XMLTV URL: ${XMLTV_URL}`);
+                        console.log(`â Dynamically loaded XMLTV URL: ${XMLTV_URL}`);
                     }
                 }
 
@@ -527,11 +527,11 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
                 }
             }
             if (!XMLTV_URL) {
-                console.warn("⚠️ Could not find url-tvg or x-tvg-url in M3U header. Schedule may not load.");
+                console.warn("â ï¸ Could not find url-tvg or x-tvg-url in M3U header. Schedule may not load.");
             }
-            console.log("✅ Channel Map built successfully.");
+            console.log("â Channel Map built successfully.");
         } catch (error) {
-            console.error("❌ Error building channel map:", error);
+            console.error("â Error building channel map:", error);
         }
     }
 
@@ -550,7 +550,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return await res.text();
       } catch (err) {
-        console.warn("⚠️ Failed to detect timezone:", err);
+        console.warn("â ï¸ Failed to detect timezone:", err);
         throw new Error("err_timezone");
       }
     }
@@ -644,7 +644,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
             timeZone: timezone
           }).format(item.stopUTC);
 
-          const episode = item.subtitle ? ` — ${item.subtitle}` : "";
+          const episode = item.subtitle ? ` â ${item.subtitle}` : "";
           const isCurrent = item === currentProgram;
           const isNext = item === nextProgram;
 
@@ -706,7 +706,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
       }
 
       if (!XMLTV_URL) {
-        scheduleList.innerHTML = `<p>⚠️ Cannot load schedule. XMLTV URL not found in M3U header (url-tvg or x-tvg-url).</p>`;
+        scheduleList.innerHTML = `<p>â ï¸ Cannot load schedule. XMLTV URL not found in M3U header (url-tvg or x-tvg-url).</p>`;
         return;
       }
       
@@ -717,7 +717,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         timezone = await getUserTimezone();
       } catch (err) {
         if (!silent) {
-          scheduleList.innerHTML = `<p>⚠️ Schedule shown in UTC as timezone detection failed.<br><strong>Error:</strong> ${err.message}</p>`;
+          scheduleList.innerHTML = `<p>â ï¸ Schedule shown in UTC as timezone detection failed.<br><strong>Error:</strong> ${err.message}</p>`;
         }
       }
       
@@ -737,7 +737,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         }
         
       } catch (err) {
-        console.error("❌ Failed during XML fetch or parsing:", err.message);
+        console.error("â Failed during XML fetch or parsing:", err.message);
         if (!silent) {
           scheduleList.innerHTML = `<p>Unable to load or parse the XMLTV data from: ${xmltvUrl}<br><strong>Error:</strong> err_xml_fetch</p>`;
         }
@@ -790,15 +790,15 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         SCHEDULE_DATA.sort((a, b) => a.startUTC - b.startUTC);
 
         if (!silent) {
-          console.log("✅ Schedule data loaded successfully.");
+          console.log("â Schedule data loaded successfully.");
         } else {
-          console.log("✅ Schedule data refreshed in background.");
+          console.log("â Schedule data refreshed in background.");
         }
         
         renderSchedule();
 
       } catch (err) {
-        console.error("❌ Failed during XML processing/rendering:", err.message, err.stack);
+        console.error("â Failed during XML processing/rendering:", err.message, err.stack);
         if (!silent) {
           scheduleList.innerHTML = `<p>Unable to process or display the XMLTV data.<br><strong>Error Code:</strong> err_processing_xml_data</p>`;
         }
@@ -837,11 +837,11 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
 
       getStreamURL(targetTvgId, async function (streamURL) {
         // Probe stream for MP2 codecs before deciding which player to use
-        console.log(`🔍 Probing stream for MP2 codecs: ${streamURL}`);
+        console.log(`ð Probing stream for MP2 codecs: ${streamURL}`);
         const { needsTranscode, reason } = await probeStreamCodecs(streamURL);
 
         if (needsTranscode) {
-          console.log(`🎬 MP2 codec detected (${reason}). Activating ffmpeg.wasm transcoder.`);
+          console.log(`ð¬ MP2 codec detected (${reason}). Activating ffmpeg.wasm transcoder.`);
           $('#loading-container').hide();
           $('#ffmpeg-status').css('display', 'flex');
 
@@ -849,11 +849,11 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
           try {
             await startMp2Transcoding(streamURL, videoEl);
           } catch (err) {
-            console.error('❌ ffmpeg.wasm transcoding failed:', err);
+            console.error('â ffmpeg.wasm transcoding failed:', err);
             showError('ffmpeg_transcode_failed');
           }
         } else {
-          console.log(`▶️ No MP2 detected (${reason}). Using JWPlayer.`);
+          console.log(`â¶ï¸ No MP2 detected (${reason}). Using JWPlayer.`);
           const n = await normalizeStreamURL(streamURL);
           initializePlayer(n.url);
         }
@@ -912,7 +912,7 @@ async function normalizeStreamURL(streamURL, _depth) {
       return { url: finalUrl };
     }
 
-    // Not HLS — likely a bare-text indirection (common with IPTV panels
+    // Not HLS â likely a bare-text indirection (common with IPTV panels
     // that serve a plain stream URL from an m3u entry).
     const lines = text.split(/\r?\n/).map(x => x.trim()).filter(x => x && !x.startsWith("#"));
     if (lines.length === 1) {
@@ -923,7 +923,7 @@ async function normalizeStreamURL(streamURL, _depth) {
       return { url: makeSyntheticPlaylist(resolved) };
     }
 
-    // Fallback: unrecognized multi-line, non-HLS body — just pass through.
+    // Fallback: unrecognized multi-line, non-HLS body â just pass through.
     return { url: finalUrl };
   } catch (e) {
     return { url: streamURL };
@@ -946,316 +946,56 @@ ${rawUrl}
   return URL.createObjectURL(blob);
 }
 function initializePlayer(streamURL) {
-  const player = jwplayer("my-video");
+      const player = jwplayer("my-video");
 
-  player.setup({
-    file: streamURL,
-    type: "application/x-mpegURL",
-    width: "100%",
-    aspectratio: "16:9",
-    autostart: true,
-    primary: "html5",
-    preload: "auto",
-    mute: false
-  });
+      player.setup({
+        file: streamURL,
+        type: "application/x-mpegURL", // always HLS now â real or synthetic
+        width: "100%",
+        aspectratio: "16:9",
+        autostart: true,
+        primary: "html5",
+        preload: "auto",
+        mute: false
+      });
 
-  let revealed = false;
-  let playbackCheckTimer = null;
-  let liveStream = true;
+      // Safety net: if the player hasn't shown anything after 12 s, surface an error
+      // instead of leaving the user staring at a loading spinner forever.
+      const stallTimer = setTimeout(function() {
+        if ($("#loading-container").length) {
+          console.warn("Player stall timeout â stream may be unreachable or codec unsupported.");
+          showError("stall_timeout");
+        }
+      }, 12000);
 
-  // Give longer HLS segments enough time to begin playback.
-  const stallTimer = setTimeout(function() {
-    if ($("#loading-container").length) {
-      console.warn(
-        "Player stall timeout — stream may be unreachable or codec unsupported."
-      );
-      showError("stall_timeout");
-    }
-  }, 30000);
-
-  function showPlayerLoading() {
-    if ($("#loading-container").length) {
-      $("#loading-container").show();
-    }
-  }
-
-  function revealPlayer() {
-    if (revealed) return;
-
-    revealed = true;
-    clearTimeout(stallTimer);
-
-    if (playbackCheckTimer) {
-      clearInterval(playbackCheckTimer);
-      playbackCheckTimer = null;
-    }
-
-    $("#loading-container").fadeOut(200, function() {
-      $(this).remove();
-    });
-
-    $("#my-video").show();
-  }
-
-  function hideLiveSeekControls() {
-    if (!liveStream) return;
-
-    const root = document.getElementById("my-video");
-    if (!root) return;
-
-    /*
-     * Hide JW Player's live seek bar/timeline.
-     *
-     * We intentionally don't use duration === Infinity here because
-     * some IPTV HLS streams report a finite duration even though they
-     * are continuously updating live playlists.
-     */
-    root.querySelectorAll(
-      ".jw-slider-time, " +
-      ".jw-controlbar .jw-time-tip, " +
-      ".jw-controlbar .jw-progress"
-    ).forEach(function(el) {
-      el.style.display = "none";
-    });
-  }
-
-  /*
-   * Determine whether the HLS source is live.
-   *
-   * A live HLS media playlist normally does NOT contain #EXT-X-ENDLIST.
-   */
-  fetch(streamURL, { cache: "no-store" })
-    .then(function(res) {
-      if (!res.ok) {
-        throw new Error("HTTP " + res.status);
+      function revealPlayer() {
+        clearTimeout(stallTimer);
+        $("#loading-container").remove();
+        $("#my-video").show();
       }
 
-      return res.text();
-    })
-    .then(function(playlistText) {
-      liveStream = !/#EXT-X-ENDLIST\b/i.test(playlistText);
-      hideLiveSeekControls();
-    })
-    .catch(function(err) {
-      console.warn(
-        "Could not inspect HLS playlist for live/VOD status:",
-        err
-      );
+      player.on("ready", revealPlayer);
+      player.on("firstFrame", revealPlayer);
+      player.on("buffer", function(e){
+        if(e && e.newstate==="playing"){ revealPlayer(); }
+      });
+      player.on("play", revealPlayer);
 
-      // IPTV sources are assumed to be live if inspection fails.
-      liveStream = true;
-      hideLiveSeekControls();
-    });
+      player.on("fullscreen", function (e) {
+        const videoElement = document.getElementById("my-video");
+        if (e.fullscreen) {
+          videoElement.style.border = "none";
+          videoElement.style.borderRadius = "0";
+        } else {
+          videoElement.style.border = "2px solid #00ffff";
+          videoElement.style.borderRadius = "8px";
+        }
+      });
 
- function initializePlayer(streamURL) {
-  const player = jwplayer("my-video");
+      player.on("error", function (e) {
+        console.error("Player error:", e.message || e);
+        showError(e.code || "unknown"); 
+      });
 
-  player.setup({
-    file: streamURL,
-    type: "application/x-mpegURL",
-    width: "100%",
-    aspectratio: "16:9",
-    autostart: true,
-    primary: "html5",
-    preload: "auto",
-    mute: false
-  });
-
-  let revealed = false;
-  let playbackCheckTimer = null;
-  let liveStream = true;
-
-  // Give longer HLS segments enough time to begin playback.
-  const stallTimer = setTimeout(function() {
-    if ($("#loading-container").length) {
-      console.warn(
-        "Player stall timeout — stream may be unreachable or codec unsupported."
-      );
-      showError("stall_timeout");
+      jwplayer_hls_provider.attach();
     }
-  }, 30000);
-
-  function showPlayerLoading() {
-    if ($("#loading-container").length) {
-      $("#loading-container").show();
-    }
-  }
-
-  function revealPlayer() {
-    if (revealed) return;
-
-    revealed = true;
-    clearTimeout(stallTimer);
-
-    if (playbackCheckTimer) {
-      clearInterval(playbackCheckTimer);
-      playbackCheckTimer = null;
-    }
-
-    $("#loading-container").fadeOut(200, function() {
-      $(this).remove();
-    });
-
-    $("#my-video").show();
-  }
-
-  function hideLiveSeekControls() {
-    if (!liveStream) return;
-
-    const root = document.getElementById("my-video");
-    if (!root) return;
-
-    /*
-     * Hide JW Player's live seek bar/timeline.
-     *
-     * We intentionally don't use duration === Infinity here because
-     * some IPTV HLS streams report a finite duration even though they
-     * are continuously updating live playlists.
-     */
-    root.querySelectorAll(
-      ".jw-slider-time, " +
-      ".jw-controlbar .jw-time-tip, " +
-      ".jw-controlbar .jw-progress"
-    ).forEach(function(el) {
-      el.style.display = "none";
-    });
-  }
-
-  /*
-   * Determine whether the HLS source is live.
-   *
-   * A live HLS media playlist normally does NOT contain #EXT-X-ENDLIST.
-   */
-  fetch(streamURL, { cache: "no-store" })
-    .then(function(res) {
-      if (!res.ok) {
-        throw new Error("HTTP " + res.status);
-      }
-
-      return res.text();
-    })
-    .then(function(playlistText) {
-      liveStream = !/#EXT-X-ENDLIST\b/i.test(playlistText);
-      hideLiveSeekControls();
-    })
-    .catch(function(err) {
-      console.warn(
-        "Could not inspect HLS playlist for live/VOD status:",
-        err
-      );
-
-      // IPTV sources are assumed to be live if inspection fails.
-      liveStream = true;
-      hideLiveSeekControls();
-    });
-
-  player.on("ready", function() {
-    hideLiveSeekControls();
-
-    const root = document.getElementById("my-video");
-    const video = root && root.querySelector("video");
-
-    if (!video) {
-      console.warn("JW Player video element not found.");
-      return;
-    }
-
-    let previousTime = video.currentTime || 0;
-    let started = false;
-
-    /*
-     * The important part:
-     *
-     * Do NOT reveal the player merely because JW Player says:
-     *   ready
-     *   firstFrame
-     *   play
-     *
-     * Instead, verify that currentTime is actually advancing.
-     *
-     * This prevents a frozen first frame from being displayed while
-     * the HLS player is still waiting for playable media.
-     */
-    playbackCheckTimer = setInterval(function() {
-      if (started) return;
-
-      const currentTime = video.currentTime || 0;
-
-      if (
-        !video.paused &&
-        !video.ended &&
-        video.readyState >= 2 &&
-        currentTime > previousTime + 0.05
-      ) {
-        started = true;
-        revealPlayer();
-      }
-
-      previousTime = currentTime;
-
-      // JW Player can rebuild its controls during playback.
-      // Reapply the live-stream rule periodically.
-      hideLiveSeekControls();
-
-    }, 100);
-
-    /*
-     * "playing" is the strongest indication that the browser has
-     * actually started playback.
-     */
-    video.addEventListener("playing", revealPlayer);
-
-    /*
-     * If the stream hasn't started yet, keep the loading screen.
-     */
-    video.addEventListener("waiting", showPlayerLoading);
-    video.addEventListener("stalled", showPlayerLoading);
-
-    /*
-     * JW Player may create/recreate the timeline when duration changes.
-     */
-    video.addEventListener("canplay", hideLiveSeekControls);
-    video.addEventListener("durationchange", hideLiveSeekControls);
-  });
-
-  /*
-   * IMPORTANT:
-   *
-   * Do NOT call revealPlayer() here.
-   *
-   * "play" means the browser was asked to play, not that it is
-   * actually receiving/decoding frames.
-   */
-  player.on("play", showPlayerLoading);
-
-  /*
-   * Same idea for firstFrame. Some HLS streams can expose a first
-   * decoded frame before the stream is genuinely advancing.
-   */
-  player.on("firstFrame", showPlayerLoading);
-
-  player.on("buffer", function(e) {
-    if (!e || e.newstate !== "playing") {
-      showPlayerLoading();
-    }
-  });
-
-  player.on("fullscreen", function(e) {
-    const videoElement = document.getElementById("my-video");
-
-    if (e.fullscreen) {
-      videoElement.style.border = "none";
-      videoElement.style.borderRadius = "0";
-    } else {
-      videoElement.style.border = "2px solid #00ffff";
-      videoElement.style.borderRadius = "8px";
-    }
-  });
-
-  player.on("error", function(e) {
-    console.error("Player error:", e.message || e);
-    showError(e.code || "unknown");
-  });
-
-  jwplayer_hls_provider.attach();
-}
