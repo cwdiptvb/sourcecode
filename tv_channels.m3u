@@ -299,7 +299,7 @@ http://23.237.104.106:8080/USA_SYFY/index.m3u8
 #EXTINF:-1 tvg-id="TBS.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/tbs-us.png" tvg-name="TBS East" group-title="Live",TBS East
 null
 #EXTINF:-1 tvg-id="TeenNick.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/teen-nick-us.png" tvg-name="TeenNick Eastern" group-title="Live",TeenNick Eastern
-null
+http://40.160.24.55/TEEN_NICK/index.m3u8
 #EXTINF:-1 tvg-id="Telemundo.Satellite.Feed.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/telemundo-us.png" tvg-name="Telemundo Eastern Feed" group-title="Live",Telemundo Eastern Feed
 null
 #EXTINF:-1 tvg-id="Cooking.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/cooking-channel-us.png" tvg-name="The Cooking Channel" group-title="Live",The Cooking Channel
