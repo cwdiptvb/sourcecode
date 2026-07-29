@@ -22,7 +22,7 @@ jobs:
         run: npm install -g surge
 
       - name: Deploy to Surge
-        run: surge . iptvpro.ddns.net
+        run: surge . iptvpro.ddns.net --force http
         env:
           SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }}
           SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }}
