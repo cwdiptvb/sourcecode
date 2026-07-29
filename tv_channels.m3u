@@ -20,7 +20,7 @@ https://gpuserver3.tier1streams.com/BBC_WORLD_NEWS/index.m3u8
 #EXTINF:-1 tvg-id="BET.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bet-us.png" tvg-name="BET" group-title="Live",BET
 https://gpuserver3.tier1streams.com/BET_EAST/index.m3u8
 #EXTINF:-1 tvg-id="BET.Her.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bet-her-us.png" tvg-name="BET Her" group-title="Live",BET Her
-https://gpuserver3.tier1streams.com/BET_HER/index.m3u8
+http://iptvpro.ddns.net/stream/bether/index.m3u8
 #EXTINF:-1 tvg-id="Big.Ten.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/big-ten-network-us.png" tvg-name="Big Ten Network" group-title="Live",Big Ten Network
 https://gpuserver3.tier1streams.com/BIG_TEN_NETWORK/index.m3u8
 #EXTINF:-1 tvg-id="Bloomberg.HD.us2" tvg-logo ="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bloomberg-television-us.png" tvg-name="Bloomberg TV" group-title="Live",Bloomberg TV
