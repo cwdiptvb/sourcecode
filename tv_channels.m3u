@@ -86,7 +86,7 @@ https://gpuserver3.tier1streams.com/ESPN_NEWS/index.m3u8
 #EXTINF:-1 tvg-id="ESPNU.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espnu-us.png" tvg-name="ESPN U" group-title="Live",ESPN U
 https://gpuserver3.tier1streams.com/ESPN_U/index.m3u8
 #EXTINF:-1 tvg-id="ESPN2.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espn2-us.png" tvg-name="ESPN2" group-title="Live",ESPN2
-http://iptvstream.rf.gd/espn2/index.m3u8
+http://iptvstream.rf.gd/playlist.php?id=102011
 #EXTINF:-1 tvg-id="FanDuel.Sports.Indiana.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fanduel-sports-network-us.png" tvg-name="Fanduel Sports Indiana" group-title="Live",Fanduel Sports Indiana
 null
 #EXTINF:-1 tvg-id="FanDuel.Sports.Network.Detroit.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fanduel-sports-network-us.png" tvg-name="Fanduel Sports Network Detroit" group-title="Live",Fanduel Sports Network Detroit
