@@ -86,7 +86,7 @@ https://gpuserver3.tier1streams.com/ESPN_NEWS/index.m3u8
 #EXTINF:-1 tvg-id="ESPNU.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espnu-us.png" tvg-name="ESPN U" group-title="Live",ESPN U
 https://gpuserver3.tier1streams.com/ESPN_U/index.m3u8
 #EXTINF:-1 tvg-id="ESPN2.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espn2-us.png" tvg-name="ESPN2" group-title="Live",ESPN2
-https://cdn.bluetier.top/FOXSPORTS2/index.m3u8?token=Rk9YU1BPUlRTMnxub19jaGVja19pcHwxNzg1NDQ2Mzky.5a695d6d625007774c112623851a321f1fc888136c3490834a2623696869aad7
+null
 #EXTINF:-1 tvg-id="FanDuel.Sports.Indiana.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fanduel-sports-network-us.png" tvg-name="Fanduel Sports Indiana" group-title="Live",Fanduel Sports Indiana
 null
 #EXTINF:-1 tvg-id="FanDuel.Sports.Network.Detroit.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fanduel-sports-network-us.png" tvg-name="Fanduel Sports Network Detroit" group-title="Live",Fanduel Sports Network Detroit
@@ -138,7 +138,7 @@ https://gpuserver3.tier1streams.com/FOX_NEWS/index.m3u8
 #EXTINF:-1 tvg-id="FS1.Fox.Sports.1.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fox-sports-1-us.png" tvg-name="Fox Sports 1" group-title="Live",Fox Sports 1
 http://85.237.89.160:9590/usa-s/FOX-SPORTS-1/index.m3u8
 #EXTINF:-1 tvg-id="FS2.Fox.Sports.2.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fox-sports-2-us.png" tvg-name="Fox Sports 2" group-title="Live",Fox Sports 2
-null
+https://cdn.bluetier.top/FOXSPORTS2/index.m3u8?token=Rk9YU1BPUlRTMnxub19jaGVja19pcHwxNzg1NDQ2Mzky.5a695d6d625007774c112623851a321f1f
 #EXTINF:-1 tvg-id="Freeform.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/freeform-us.png" tvg-name="Freeform East Feed" group-title="Live",Freeform East Feed
 https://gpuserver3.tier1streams.com/FREEFORM/index.m3u8
 #EXTINF:-1 tvg-id="Fuse.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fuse-us.png" tvg-name="FUSE TV Eastern feed" group-title="Live",FUSE TV Eastern feed
