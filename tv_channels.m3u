@@ -23,13 +23,13 @@ https://gpuserver3.tier1streams.com/BET_EAST/index.m3u8
 http://iptvpro.ddns.net/stream/bether/index.m3u8
 #EXTINF:-1 tvg-id="Big.Ten.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/big-ten-network-us.png" tvg-name="Big Ten Network" group-title="Live",Big Ten Network
 https://gpuserver3.tier1streams.com/BIG_TEN_NETWORK/index.m3u8
-#EXTINF:-1 tvg-id="Bloomberg.HD.us2" tvg-logo ="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bloomberg-television-us.png" tvg-name="Bloomberg TV" group-title="Live",Bloomberg TV
+#EXTINF:-1 tvg-id="Bloomberg.HD.us2" tvg-logo="httpsd://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bloomberg-television-us.png" tvg-name="Bloomberg TV" group-title="Live",Bloomberg TV
 https://gpuserver3.tier1streams.com/BLOOMBERG/index.m3u8
 #EXTINF:-1 tvg-id="Boomerang.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/boomerang-us.png" tvg-name="Boomerang" group-title="Live",Boomerang
 https://gpuserver3.tier1streams.com/BOOMERANG/index.m3u8
 #EXTINF:-1 tvg-id="Bravo.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bravo-us.png" tvg-name="Bravo" group-title="Live",Bravo
 https://gpuserver3.tier1streams.com/BRAVO/index.m3u8
-#EXTINF:-1 tvg-id="CSPAN.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/c-span-us.png" tvg-name="C-SPAN" group-title="Live",C-SPAN
+#EXTINF:-1 tvg-id="CSPAN.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/c-span-1-us.png" tvg-name="C-SPAN" group-title="Live",C-SPAN
 https://gpuserver3.tier1streams.com/C-SPAN_HD/index.m3u8
 #EXTINF:-1 tvg-id="CSPAN2.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/c-span-2-us.png" tvg-name="C-SPAN 2" group-title="Live",C-SPAN 2
 https://gpuserver3.tier1streams.com/C-SPAN_2/index.m3u8
