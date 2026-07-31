@@ -81,11 +81,11 @@ https://gpuserver3.tier1streams.com/E_ENTERTAINMENT_EAST/index.m3u8
 https://gpuserver3.tier1streams.com/ESPN_HD/index.m3u8
 #EXTINF:-1 tvg-id="ESPN.Deportes.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espn-deportes-us.png" tvg-name="ESPN Deportes" group-title="Live",ESPN Deportes
 http://40.160.24.58/ESPN_DEPORTES/index.m3u8
-#EXTINF:-1 tvg-id="ESPNews.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espn-news-us.png" tvg-name="ESPN News" group-title="Live",ESPN News
+#EXTINF:-1 tvg-id="ESPNews.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espnews-us.png" tvg-name="ESPN News" group-title="Live",ESPN News
 https://gpuserver3.tier1streams.com/ESPN_NEWS/index.m3u8
-#EXTINF:-1 tvg-id="ESPNU.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espnu-us.png" tvg-name="ESPN U" group-title="Live",ESPN U
+#EXTINF:-1 tvg-id="ESPNU.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espn-u-us.png" tvg-name="ESPN U" group-title="Live",ESPN U
 https://gpuserver3.tier1streams.com/ESPN_U/index.m3u8
-#EXTINF:-1 tvg-id="ESPN2.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espn2-us.png" tvg-name="ESPN2" group-title="Live",ESPN2
+#EXTINF:-1 tvg-id="ESPN2.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/espn-2-us.png" tvg-name="ESPN2" group-title="Live",ESPN2
 https://ftv.itscwd273.workers.dev/?id=ESPN2
 #EXTINF:-1 tvg-id="FanDuel.Sports.Indiana.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fanduel-sports-network-us.png" tvg-name="Fanduel Sports Indiana" group-title="Live",Fanduel Sports Indiana
 null
@@ -143,7 +143,7 @@ https://ftv.itscwd273.workers.dev/?id=FOXSPORTS2
 https://gpuserver3.tier1streams.com/FREEFORM/index.m3u8
 #EXTINF:-1 tvg-id="Fuse.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fuse-us.png" tvg-name="FUSE TV Eastern feed" group-title="Live",FUSE TV Eastern feed
 https://gpuserver3.tier1streams.com/FUSE/index.m3u8
-#EXTINF:-1 tvg-id="FX.Movie.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fx-movie-channel-us.png" tvg-name="FX Movie Channel" group-title="Live",FX Movie Channel
+#EXTINF:-1 tvg-id="FX.Movie.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fxm-movie-channel-us.png" tvg-name="FX Movie Channel" group-title="Live",FX Movie Channel
 https://gpuserver3.tier1streams.com/FXM/index.m3u8
 #EXTINF:-1 tvg-id="FX.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/fx-us.png" tvg-name="FX Movie Channel" group-title="Live",FX
 https://gpuserver3.tier1streams.com/FX/index.m3u8
