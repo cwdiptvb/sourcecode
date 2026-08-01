@@ -889,61 +889,105 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
 //     <video> tag that can't decode raw MPEG-TS.
 // ============================================================
 
-async function normalizeStreamURL(streamURL, _depth) {
-  const depth = _depth || 0;
-  if (depth > 5) return { url: streamURL }; // guard against redirect loops
+async function normalizeStreamURL(streamURL, _depth = 0) {
 
-  try {
-    const r = await fetch(streamURL, { cache: "no-store" });
-    const finalUrl = r.url || streamURL; // URL AFTER following redirects
-    const ct = (r.headers.get("content-type") || "").toLowerCase();
-
-    // Server explicitly says it's a raw TS stream
-    if (ct.includes("video/mp2t") || ct.includes("video/mpeg")) {
-      return { url: makeSyntheticPlaylist(finalUrl) };
+    if (_depth > 5) {
+        return { url: streamURL };
     }
 
-    const text = await r.text();
-    const trimmed = text.trim();
+    const response = await fetch(streamURL, {
+        cache: "no-store"
+    });
 
-    if (trimmed.startsWith("#EXTM3U")) {
-      // Genuine HLS playlist. Use the FINAL URL as the base so relative
-      // segment/variant paths inside it resolve against the real host.
-      return { url: finalUrl };
+    const finalUrl = response.url || streamURL;
+
+    const text = await response.text();
+
+    // Raw transport stream
+    if (!text.trim().startsWith("#EXTM3U")) {
+        return { url: makeSyntheticPlaylist(finalUrl) };
     }
 
-    // Not HLS â likely a bare-text indirection (common with IPTV panels
-    // that serve a plain stream URL from an m3u entry).
-    const lines = text.split(/\r?\n/).map(x => x.trim()).filter(x => x && !x.startsWith("#"));
-    if (lines.length === 1) {
-      const resolved = new URL(lines[0], finalUrl).href;
-      if (resolved.toLowerCase().includes(".m3u8")) {
-        return normalizeStreamURL(resolved, depth + 1); // follow the chain
-      }
-      return { url: makeSyntheticPlaylist(resolved) };
+    const base = finalUrl.substring(
+        0,
+        finalUrl.lastIndexOf("/") + 1
+    );
+
+    const lines = text.split(/\r?\n/);
+
+    // Master playlist?
+    const isMaster = lines.some(x => x.startsWith("#EXT-X-STREAM-INF"));
+
+    if (isMaster) {
+
+        for (let i = 0; i < lines.length; i++) {
+
+            const line = lines[i].trim();
+
+            if (
+                line &&
+                !line.startsWith("#")
+            ) {
+
+                const variant =
+                    new URL(line, base).href;
+
+                return normalizeStreamURL(
+                    variant,
+                    _depth + 1
+                );
+            }
+        }
     }
 
-    // Fallback: unrecognized multi-line, non-HLS body â just pass through.
-    return { url: finalUrl };
-  } catch (e) {
-    return { url: streamURL };
-  }
+    // Rewrite every relative URI to absolute.
+    const rewritten = lines.map(line => {
+
+        const l = line.trim();
+
+        if (
+            !l ||
+            l.startsWith("#")
+        ) {
+            return line;
+        }
+
+        return new URL(
+            l,
+            base
+        ).href;
+
+    }).join("\n");
+
+    const blob = new Blob(
+        [rewritten],
+        {
+            type: "application/vnd.apple.mpegurl"
+        }
+    );
+
+    return {
+        url: URL.createObjectURL(blob)
+    };
+
 }
-
-// Wraps a bare stream URL (e.g. a raw .ts endpoint) in a minimal VOD-style
-// HLS playlist so hls.js can fetch/demux it like any normal segment,
-// instead of handing raw MPEG-TS to a native <video> tag that can't play it.
 function makeSyntheticPlaylist(rawUrl) {
-  const playlist =
+    const playlist =
 `#EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-TARGETDURATION:10
 #EXT-X-MEDIA-SEQUENCE:0
 #EXTINF:10,
-${rawUrl}
-`;
-  const blob = new Blob([playlist], { type: "application/vnd.apple.mpegurl" });
-  return URL.createObjectURL(blob);
+${rawUrl}`;
+
+    return URL.createObjectURL(
+        new Blob(
+            [playlist],
+            {
+                type: "application/vnd.apple.mpegurl"
+            }
+        )
+    );
 }
 function initializePlayer(streamURL) {
       const player = jwplayer("my-video");
