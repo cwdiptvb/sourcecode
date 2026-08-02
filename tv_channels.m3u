@@ -34,7 +34,7 @@ https://gpuserver3.tier1streams.com/C-SPAN_HD/index.m3u8
 #EXTINF:-1 tvg-id="CSPAN2.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/c-span-2-us.png" tvg-name="C-SPAN 2" group-title="Live",C-SPAN 2
 https://gpuserver3.tier1streams.com/C-SPAN_2/index.m3u8
 #EXTINF:-1 tvg-id="Cartoon.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/cartoon-network-us.png" tvg-name="Cartoon Network" group-title="Live",Cartoon Network
-http://206.212.244.63/646/index.m3u8
+http://40.160.24.52/CARTOON_NETWORK_EAST/index.m3u8
 #EXTINF:-1 tvg-id="CBS.West.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/us-local/cbs-2-kcbs-us.png" tvg-name="CBS (KCBS) Los Angeles" group-title="Live",CBS (KCBS) Los Angeles
 http://stream.cammonitorplus.net/1798/index.m3u8
 #EXTINF:-1 tvg-id="CBS.East.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/us-local/cbs-2-wcbs-us.png" tvg-name="CBS (WCBS) New York NY" group-title="Live",CBS (WCBS) New York NY
