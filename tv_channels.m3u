@@ -132,7 +132,7 @@ http://40.160.24.53/HLN/index.m3u8
 #EXTINF:-1 tvg-id="IFC.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/ifc-us.png" tvg-name="Independent Film Channel US" group-title="Live",Independent Film Channel US
 http://40.160.24.53/IFC/index.m3u8
 #EXTINF:-1 tvg-id="Investigation.Discovery.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/investigation-discovery-us.png" tvg-name="Investigation Discovery USA Eastern" group-title="Live",Investigation Discovery USA Eastern
-http://45.162.64.114/DISCOVERY_ID/index.m3u8
+http://40.160.24.53/INVESTIGATION_DISCOVERY/index.m3u8
 #EXTINF:-1 tvg-id="ION.Television.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/ion-us.png" tvg-name="ION Eastern Feed" group-title="Live",ION Eastern Feed
 http://40.160.24.53/ION_TV/index.m3u8
 #EXTINF:-1 tvg-id="Lifetime.Movie.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/lifetime-movies-us.png" tvg-name="Lifetime Movies East" group-title="Live",Lifetime Movies East
