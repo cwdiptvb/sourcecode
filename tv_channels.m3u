@@ -117,7 +117,7 @@ http://206.212.244.63/78/index.m3u8
 http://206.212.244.63/4237/index.m3u8
 #EXTINF:-1 tvg-id="Golf.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/nbc-golf-us.png" tvg-name="Golf Channel" group-title="Sports",Golf Channel
 https://gpuserver3.tier1streams.com/GOLF_CHANNEL/index.m3u8
-#EXTINF:-1 tvg-id="Hallmark.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hallmark-channel-us.png" tvg-name="Hallmark" group-title="Entertainnent",Hallmark
+#EXTINF:-1 tvg-id="Hallmark.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hallmark-channel-us.png" tvg-name="Hallmark" group-title="Entertainment",Hallmark
 http://206.212.244.63/84/index.m3u8
 #EXTINF:-1 tvg-id="Hallmark.Family.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/hallmark-family-us.png" tvg-name="Hallmark Family" group-title="Kids",Hallmark Family
 http://206.212.244.63/85/index.m3u8
@@ -241,9 +241,9 @@ http://40.160.24.55/TV_ONE/index.m3u8
 http://206.212.244.63/672/index.m3u8
 #EXTINF:-1 tvg-id="USA.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/usa-network-us.png" tvg-name="USA Network" group-title="Entertainment",USA Network
 https://ftv.itscwd273.workers.dev/?id=USANETEAST
-#EXTINF:-1 tvg-id="VH1.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/vh1-us.png" tvg-name="VH1" group-title="Entertainmenr",VH1
+#EXTINF:-1 tvg-id="VH1.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/vh1-us.png" tvg-name="VH1" group-title="Entertainment",VH1
 http://40.160.24.55/VH1/index.m3u8
-#EXTINF:-1 tvg-id="Vice.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/vice-us.png" tvg-name="VICE" group-title="Entertainnent",VICE
+#EXTINF:-1 tvg-id="Vice.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/vice-us.png" tvg-name="VICE" group-title="Entertainment",VICE
 http://206.212.244.63/170/index.m3u8
 #EXTINF:-1 tvg-id="WE.tv.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/wetv-us.png" tvg-name="WE" group-title="Entertainment",WE
 http://40.160.24.55/WE_TV/index.m3u8
