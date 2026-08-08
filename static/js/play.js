@@ -950,7 +950,7 @@ function initializePlayer(streamURL) {
 
       player.setup({
         file: streamURL,
-        type: "application/x-mpegURL", // always HLS now â real or synthetic
+        type: "application/x-mpegURL",
         width: "100%",
         aspectratio: "16:9",
         autostart: true,
@@ -959,17 +959,24 @@ function initializePlayer(streamURL) {
         mute: false
       });
 
-      // Safety net: if the player hasn't shown anything after 12 s, surface an error
-      // instead of leaving the user staring at a loading spinner forever.
       const stallTimer = setTimeout(function() {
         if ($("#loading-container").length) {
-          console.warn("Player stall timeout â stream may be unreachable or codec unsupported.");
+          console.warn("Player stall timeout — stream may be unreachable or codec unsupported.");
           showError("stall_timeout");
         }
       }, 12000);
 
+      // Force-reveal after a few seconds regardless of player events
+      const forceRevealTimer = setTimeout(function() {
+        if ($("#loading-container").length) {
+          console.warn("Forcing player reveal after timeout — events may not have fired.");
+          revealPlayer();
+        }
+      }, 4000); // adjust delay as needed
+
       function revealPlayer() {
         clearTimeout(stallTimer);
+        clearTimeout(forceRevealTimer);
         $("#loading-container").remove();
         $("#my-video").show();
       }
@@ -980,7 +987,6 @@ function initializePlayer(streamURL) {
         if(e && e.newstate==="playing"){ revealPlayer(); }
       });
       player.on("play", revealPlayer);
-
       player.on("fullscreen", function (e) {
         const videoElement = document.getElementById("my-video");
         if (e.fullscreen) {
