@@ -3,12 +3,12 @@
 #EXT-X-INDEPENDENT-SEGMENTS
 #EXT-X-MEDIA:LANGUAGE="eng",AUTOSELECT=NO,INSTREAM-ID="CC1",TYPE=CLOSED-CAPTIONS,GROUP-ID="CC",DEFAULT=NO,NAME="english"
 #EXT-X-STREAM-INF:CODECS="avc1.640028,mp4a.40.2",AVERAGE-BANDWIDTH=4870800,RESOLUTION=1920x1080,FRAME-RATE=29.97,BANDWIDTH=5058864,CLOSED-CAPTIONS="CC"
-https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/20f47ada-17e8-4764-82c7-32ffd8bdd660/0.m3u8
+https://garden-tv.mobi/proxy?stream=https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/20f47ada-17e8-4764-82c7-32ffd8bdd660/0.m3u8
 #EXT-X-STREAM-INF:CODECS="avc1.4d4028,mp4a.40.2",AVERAGE-BANDWIDTH=2560800,RESOLUTION=1280x720,FRAME-RATE=29.97,BANDWIDTH=2657019,CLOSED-CAPTIONS="CC"
-https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/4622c1fe-f69a-48d0-b67d-2fe77bbb84c0/1.m3u8
+https://garden-tv.mobi/proxy?stream=https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/4622c1fe-f69a-48d0-b67d-2fe77bbb84c0/1.m3u8
 #EXT-X-STREAM-INF:CODECS="avc1.640028,mp4a.40.2",AVERAGE-BANDWIDTH=1755600,RESOLUTION=854x480,FRAME-RATE=29.97,BANDWIDTH=1821204,CLOSED-CAPTIONS="CC"
-https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/4622c1fe-f69a-48d0-b67d-2fe77bbb84c0/2.m3u8
+https://garden-tv.mobi/proxy?stream=https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/4622c1fe-f69a-48d0-b67d-2fe77bbb84c0/2.m3u8
 #EXT-X-STREAM-INF:CODECS="avc1.4d4028,mp4a.40.2",AVERAGE-BANDWIDTH=765600,RESOLUTION=640x360,FRAME-RATE=29.97,BANDWIDTH=791841,CLOSED-CAPTIONS="CC"
-https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/4622c1fe-f69a-48d0-b67d-2fe77bbb84c0/3.m3u8
+https://garden-tv.mobi/proxy?stream=https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/4622c1fe-f69a-48d0-b67d-2fe77bbb84c0/3.m3u8
 #EXT-X-STREAM-INF:CODECS="avc1.4d4028,mp4a.40.2",AVERAGE-BANDWIDTH=435600,RESOLUTION=426x240,FRAME-RATE=29.97,BANDWIDTH=448720,CLOSED-CAPTIONS="CC"
-https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/4622c1fe-f69a-48d0-b67d-2fe77bbb84c0/4.m3u8
+https://garden-tv.mobi/proxy?stream=https://s8host1.localnow.api.cms.amdvids.com/v1/manifest/c189661feba961c19bc5fb60b57879ee9b84548a/config10/4622c1fe-f69a-48d0-b67d-2fe77bbb84c0/4.m3u8
