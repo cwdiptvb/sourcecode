@@ -158,7 +158,7 @@ http://40.160.24.53/MSNBC/index.m3u8
 #EXTINF:-1 tvg-id="MTV2.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/mtv2-us.png" tvg-name="MTV 2" group-title="Entertainment",MTV 2
 http://40.160.24.53/MTV2/index.m3u8
 #EXTINF:-1 tvg-id="MTV.-.Music.Television.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/mtv-us.png" tvg-name="MTV" group-title="Entertainment",MTV
-http://40.160.24.53/MTV/index.m3u8
+http://5.254.89.106/6199/index.m3u8
 #EXTINF:-1 tvg-id="National.Geographic.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/national-geographic-us.png" tvg-name="National Geographic" group-title="Documentary",National Geographic
 http://40.160.24.53/NAT_GEO/index.m3u8
 #EXTINF:-1 tvg-id="National.Geographic.Wild.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/national-geographic-wild-us.png" tvg-name="National Geographic Wild" group-title="Documentary",National Geographic Wild
