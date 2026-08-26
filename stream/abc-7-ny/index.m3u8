@@ -1,6 +1,4 @@
 #EXTM3U
 #EXT-X-VERSION:3
-#EXT-X-MEDIA-SEQUENCE:0
-#EXTINF:-1,
-http://s.rocketdns.info:8080/monstercable/Dq6jjknxCr/3606
-#EXT-X-ENDLIST
+#EXT-X-STREAM-INF:BANDWIDTH=5000000,CODECS="avc1.640028,mp4a.40.2"
+http://4.30.180.36:8420/abc/tracks-v1a1/mono.m3u8?token=test
