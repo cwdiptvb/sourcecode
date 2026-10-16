@@ -2,31 +2,33 @@
 #PLAYLIST:Free Live TV
 #EXTIPL:Free Live TV
 #EXTINF:-1 tvg-id="A.and.E.HD.East.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/a-and-e-us.png" tvg-name="A&E" group-title="Entertainment",A&E
-http://iptvpro.ddns.net/stream/ae/index.m3u8
+http://23.239.31.26:8989/aande/index.m3u8
 #EXTINF:-1 tvg-id="ABC.National.Feed.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/abc-logo-1962-us.png" tvg-name="ABC" group-title="News",ABC
 http://4.30.180.36:8420/abc/index.m3u8?token=test
 #EXTINF:-1 tvg-id="ACC.Network.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/acc-network-us.png" tvg-name="ACC Network" group-title="Sports",ACC Network
-http://gpuserver3.tier1streams.com/ACC_NETWORK/index.m3u8
+http://23.237.104.106:8080/USA_ACCN/index.m3u8
+#EXTINF:-1 tvg-id="Adult.Swim.us2" tvg-logo="https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Adult_Swim_2003_logo.svg/960px-Adult_Swim_2003_logo.svg.png" tvg-name="Adult Swim" group-title="Kids",Adult Swim
+https://turnerlive.warnermediacdn.com/hls/live/2023183/aseast/noslate/VIDEO_1_5128000.m3u8
 #EXTINF:-1 tvg-id="AMC.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/amc-us.png" tvg-name="AMC" group-title="Movies",AMC
 http://4.30.180.36:8420/amc/index.m3u8?token=test
 #EXTINF:-1 tvg-id="American.Heroes.Channel.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/american-heroes-channel-us.png" tvg-name="American Heroes Channel" group-title="Documentary",American Heroes Channel
-http://gpuserver3.tier1streams.com/AMERICAN_HEROES_CHANNEL/index.m3u8
+http://23.237.104.106:8080/USA_AMERICAN_HEROES/index.m3u8
 #EXTINF:-1 tvg-id="Animal.Planet.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/animal-planet-us.png" tvg-name="Animal Planet" group-title="Entertainment",Animal Planet
 https://4.30.180.36:8420/animal/index.m3u8?token=test
 #EXTINF:-1 tvg-id="BBC.America.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bbc-america-us.png" tvg-name="BBC America" group-title="Entertainment",BBC America
-https://gpuserver3.tier1streams.com/BBC_AMERICA/index.m3u8
+http://23.237.104.106:8080/USA_BBC_AMERICA/index.m3u8
 #EXTINF:-1 tvg-id="BBC.News.(North.America).HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/bbc-news-uk.png" tvg-name="BBC News North America" group-title="News",BBC News North America
-https://gpuserver3.tier1streams.com/BBC_WORLD_NEWS/index.m3u8
+http://23.237.104.106:8080/USA_BBC_NEWS/index.m3u8
 #EXTINF:-1 tvg-id="BET.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bet-us.png" tvg-name="BET" group-title="Entertainment",BET
 https://gpuserver3.tier1streams.com/BET_EAST/index.m3u8
 #EXTINF:-1 tvg-id="BET.Her.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bet-her-us.png" tvg-name="BET Her" group-title="Entertainment",BET Her
 http://iptvpro.ddns.net/stream/bether/index.m3u8
 #EXTINF:-1 tvg-id="Big.Ten.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/big-ten-network-us.png" tvg-name="Big Ten Network" group-title="Sports",Big Ten Network
-https://gpuserver3.tier1streams.com/BIG_TEN_NETWORK/index.m3u8
+http://23.237.104.106:8080/USA_BTN/index.m3u8
 #EXTINF:-1 tvg-id="Bloomberg.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bloomberg-television-us.png" tvg-name="Bloomberg TV" group-title="News",Bloomberg TV
-https://www.bloomberg.com/media-manifest/streams/phoenix-us.m3u8
+https://mumbai-edge.smartplaytv.in/Bloomberg/index.m3u8
 #EXTINF:-1 tvg-id="Boomerang.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/boomerang-us.png" tvg-name="Boomerang" group-title="Kids",Boomerang
-https://gpuserver3.tier1streams.com/BOOMERANG/index.m3u8
+http://23.237.104.106:8080/USA_BOOMERANG/index.m3u8
 #EXTINF:-1 tvg-id="Bravo.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/bravo-us.png" tvg-name="Bravo" group-title="Entertainment",Bravo
 http://4.30.180.36:8420/bravo/index.m3u8?token=test
 #EXTINF:-1 tvg-id="CSPAN.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/c-span-1-us.png" tvg-name="C-SPAN" group-title="News",C-SPAN
@@ -34,7 +36,7 @@ https://gpuserver3.tier1streams.com/C-SPAN_HD/index.m3u8
 #EXTINF:-1 tvg-id="CSPAN2.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/c-span-2-us.png" tvg-name="C-SPAN 2" group-title="News",C-SPAN 2
 https://gpuserver3.tier1streams.com/C-SPAN_2/index.m3u8
 #EXTINF:-1 tvg-id="Cartoon.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/cartoon-network-us.png" tvg-name="Cartoon Network" group-title="Kids",Cartoon Network
-http://40.160.24.52/CARTOON_NETWORK_EAST/index.m3u8
+https://turnerlive.warnermediacdn.com/hls/live/2023160/tooneast/noslate/VIDEO_3_1928000.m3u8
 #EXTINF:-1 tvg-id="CBS.West.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/us-local/cbs-2-kcbs-us.png" tvg-name="CBS (KCBS) Los Angeles" group-title="News",CBS (KCBS) Los Angeles
 http://stream.cammonitorplus.net/1798/index.m3u8
 #EXTINF:-1 tvg-id="CBS.East.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/us-local/cbs-2-wcbs-us.png" tvg-name="CBS (WCBS) New York NY" group-title="News",CBS (WCBS) New York NY
