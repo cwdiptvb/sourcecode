@@ -1,21 +1,3 @@
-
-// ============================================================
-// ffmpeg.wasm MP2 Transcoding Support
-// Handles MPEG-2 Video (mp2v) and MPEG-1 Audio Layer II (mp2a)
-// which are not natively supported by modern browsers.
-// ============================================================
-
-/**
- * Probes a stream URL's codec information by fetching the first HLS segment
- * and sniffing for MP2 video/audio codec signatures.
- *
- * Checks for:
- *   - MPEG-2 Video start codes (0x000001B3 sequence header)
- *   - MP2 Audio sync word patterns (0xFFFD / 0xFFFC / 0xFFF5 frame sync)
- *
- * @param {string} m3u8Url - The HLS .m3u8 playlist URL
- * @returns {Promise<{needsTranscode: boolean, reason: string}>}
- */
 async function probeStreamCodecs(m3u8Url) {
   try {
     const playlistRes = await fetch(m3u8Url);
@@ -23,23 +5,17 @@ async function probeStreamCodecs(m3u8Url) {
 
     const playlistText = await playlistRes.text();
 
-    // Extract codec hints from EXT-X-STREAM-INF or EXT-X-MEDIA if present
     const codecMatch = playlistText.match(/CODECS="([^"]+)"/i);
     if (codecMatch) {
       const codecs = codecMatch[1].toLowerCase();
-      // mp4v.20.2 / mp2v / s263 = MPEG-2 video families
-      // mp4a.6b = MP2 audio in MPEG-4 container
+
       if (codecs.includes('mp2v') || codecs.includes('mp4v.20.2') ||
           codecs.includes('mp4a.6b') || codecs.includes('ac-3')) {
-        console.log(`ð MP2 codec detected via CODECS attribute: ${codecs}`);
+        console.log(`🔍 MP2 codec detected via CODECS attribute: ${codecs}`);
         return { needsTranscode: true, reason: `codec_attr:${codecs}` };
       }
     }
 
-    // Resolve base URL for relative segment paths
-    const baseUrl = m3u8Url.substring(0, m3u8Url.lastIndexOf('/') + 1);
-
-    // Find the first .ts segment in the playlist
     const segmentLines = playlistText.split('\n').filter(line =>
       line.trim() && !line.startsWith('#')
     );
@@ -47,12 +23,8 @@ async function probeStreamCodecs(m3u8Url) {
     if (segmentLines.length === 0) return { needsTranscode: false, reason: 'no_segments' };
 
     const firstSegmentPath = segmentLines[0].trim();
-    const firstSegmentUrl = firstSegmentPath.startsWith('http')
-      ? firstSegmentPath
-      : baseUrl + firstSegmentPath;
+    const firstSegmentUrl = new URL(firstSegmentPath, m3u8Url).href;
 
-    // Fetch first 4096 bytes of the segment for codec sniffing
-    // Use an AbortController so we don't hang on live streams that ignore Range
     const probeController = new AbortController();
     const probeTimeout = setTimeout(() => probeController.abort(), 5000);
     let segRes;
@@ -63,7 +35,7 @@ async function probeStreamCodecs(m3u8Url) {
       });
     } catch (fetchErr) {
       clearTimeout(probeTimeout);
-      // Timed out or network error during probe â fall back to native player
+
       return { needsTranscode: false, reason: 'segment_probe_timeout' };
     }
     clearTimeout(probeTimeout);
@@ -73,24 +45,20 @@ async function probeStreamCodecs(m3u8Url) {
     const buffer = await segRes.arrayBuffer();
     const bytes = new Uint8Array(buffer);
 
-    // Scan for MPEG-2 Video sequence header start code: 00 00 01 B3
     for (let i = 0; i < bytes.length - 4; i++) {
       if (bytes[i] === 0x00 && bytes[i+1] === 0x00 &&
           bytes[i+2] === 0x01 && bytes[i+3] === 0xB3) {
-        console.log(`ð MPEG-2 Video start code detected at byte ${i}`);
+        console.log(`🔍 MPEG-2 Video start code detected at byte ${i}`);
         return { needsTranscode: true, reason: 'mpeg2_video_startcode' };
       }
     }
 
-    // Scan for MP2 Audio frame sync word: FF FD or FF FC or FF F5
-    // MPEG audio sync: 0xFF followed by 0xFx where x indicates MPEG-1/2 + Layer II
     for (let i = 0; i < bytes.length - 2; i++) {
       if (bytes[i] === 0xFF) {
         const secondByte = bytes[i + 1];
-        // MPEG-1 Layer II: 1111 1111 1111 1101 (0xFFFD)
-        // MPEG-2 Layer II: 1111 1111 1111 0101 (0xFFF5)
+
         if (secondByte === 0xFD || secondByte === 0xFC || secondByte === 0xF5) {
-          console.log(`ð MP2 Audio sync word detected at byte ${i}: FF ${secondByte.toString(16).toUpperCase()}`);
+          console.log(`🔍 MP2 Audio sync word detected at byte ${i}: FF ${secondByte.toString(16).toUpperCase()}`);
           return { needsTranscode: true, reason: 'mp2_audio_sync' };
         }
       }
@@ -99,14 +67,11 @@ async function probeStreamCodecs(m3u8Url) {
     return { needsTranscode: false, reason: 'no_mp2_detected' };
 
   } catch (err) {
-    console.warn('â ï¸ Codec probe error (falling back to native player):', err);
+    console.warn('⚠️ Codec probe error (falling back to native player):', err);
     return { needsTranscode: false, reason: 'probe_error' };
   }
 }
 
-/**
- * Sets the ffmpeg.wasm status overlay text and progress bar.
- */
 function setFfmpegStatus(text, sub, progressPct) {
   document.getElementById('ffmpeg-status-text').textContent = text;
   if (sub !== null) document.getElementById('ffmpeg-status-sub').textContent = sub;
@@ -115,20 +80,8 @@ function setFfmpegStatus(text, sub, progressPct) {
   }
 }
 
-/**
- * Loads ffmpeg.wasm (v0.12 ESM build) dynamically and returns the FFmpeg instance.
- * Uses SharedArrayBuffer when available (requires COOP/COEP headers), falls back
- * to the single-threaded build otherwise.
- *
- * Requires the server to send:
- *   Cross-Origin-Opener-Policy: same-origin
- *   Cross-Origin-Embedder-Policy: require-corp
- * for multi-threaded mode. Single-threaded works without these headers.
- *
- * @returns {Promise<{ffmpeg: object, fetchFile: Function}>}
- */
 async function loadFfmpegWasm() {
-  // ffmpeg.wasm v0.12.x â ESM CDN build
+
   const FFMPEG_CDN = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/esm/index.js';
   const FFMPEG_UTIL_CDN = 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js';
 
@@ -140,15 +93,14 @@ async function loadFfmpegWasm() {
   const ffmpeg = new FFmpeg();
 
   ffmpeg.on('log', ({ message }) => {
-    // Parse ffmpeg progress logs for speed/time info
+
     if (message.includes('time=') || message.includes('frame=')) {
       console.debug('[ffmpeg]', message);
     }
   });
 
   ffmpeg.on('progress', ({ progress, time }) => {
-    // progress is 0â1 during file-based transcoding
-    // For live streaming we track manually instead
+
     const pct = Math.min(Math.round(progress * 100), 99);
     if (pct > 0) {
       document.getElementById('ffmpeg-progress-bar').style.width = pct + '%';
@@ -157,7 +109,6 @@ async function loadFfmpegWasm() {
 
   setFfmpegStatus('Initializing ffmpeg.wasm...', 'Loading MPEG-2 decoders...', 30);
 
-  // Load the core WASM â auto-selects multi-thread vs single-thread
   const coreUrl = typeof SharedArrayBuffer !== 'undefined'
     ? 'https://cdn.jsdelivr.net/npm/@ffmpeg/core-mt@0.12.6/dist/esm/ffmpeg-core.js'
     : 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.js';
@@ -165,65 +116,35 @@ async function loadFfmpegWasm() {
   await ffmpeg.load({ coreURL: coreUrl });
 
   setFfmpegStatus('ffmpeg.wasm ready', 'MP2 decoder loaded.', 60);
-  console.log('â ffmpeg.wasm loaded successfully');
+  console.log('✅ ffmpeg.wasm loaded successfully');
 
   return { ffmpeg, fetchFile };
 }
 
-/**
- * Resolves all segment URLs from an HLS .m3u8 playlist.
- * Handles both absolute and relative segment paths.
- *
- * @param {string} m3u8Url
- * @returns {Promise<string[]>} Ordered list of segment URLs
- */
 async function resolveHlsSegments(m3u8Url) {
   const res = await fetch(m3u8Url);
   if (!res.ok) throw new Error(`Failed to fetch playlist: ${res.status}`);
   const text = await res.text();
 
-  const baseUrl = m3u8Url.substring(0, m3u8Url.lastIndexOf('/') + 1);
-
-  // If this is a master playlist, find and recurse into the first variant
   if (text.includes('#EXT-X-STREAM-INF')) {
     const variantLines = text.split('\n').filter(l => l.trim() && !l.startsWith('#'));
     if (variantLines.length === 0) throw new Error('Master playlist has no variant streams');
-    const variantUrl = variantLines[0].trim().startsWith('http')
-      ? variantLines[0].trim()
-      : baseUrl + variantLines[0].trim();
+    const variantUrl = new URL(variantLines[0].trim(), m3u8Url).href;
     return resolveHlsSegments(variantUrl);
   }
 
-  // Media playlist â extract segment URLs
   const segments = text.split('\n')
     .filter(l => l.trim() && !l.startsWith('#'))
-    .map(l => l.trim().startsWith('http') ? l.trim() : baseUrl + l.trim());
+    .map(l => new URL(l.trim(), m3u8Url).href);
 
   return segments;
 }
 
-/**
- * Transcodes MP2 (MPEG-2 video / MP2 audio) segments via ffmpeg.wasm and
- * feeds them into a native <video> element using the MediaSource API.
- *
- * Approach:
- *   1. Download each .ts segment
- *   2. Write to ffmpeg.wasm virtual FS
- *   3. Transcode: mp2v â H.264, mp2a â AAC, mux to fMP4
- *   4. Append to MediaSource SourceBuffer
- *
- * The fMP4 (fragmented MP4) container is used because it is the only
- * container format supported by the MediaSource Extensions API.
- *
- * @param {string} m3u8Url - HLS stream URL
- * @param {HTMLVideoElement} videoEl - Target <video> element
- */
 async function startMp2Transcoding(m3u8Url, videoEl) {
   const { ffmpeg, fetchFile } = await loadFfmpegWasm();
 
   setFfmpegStatus('Buffering stream...', 'Downloading first segments...', 70);
 
-  // Set up MediaSource
   const mediaSource = new MediaSource();
   videoEl.src = URL.createObjectURL(mediaSource);
 
@@ -236,7 +157,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
   await new Promise(resolve => {
     mediaSource.addEventListener('sourceopen', () => {
       mediaSourceOpen = true;
-      // fMP4 with H.264 + AAC â universally supported via MSE
+
       sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.42E01E, mp4a.40.2"');
       sourceBuffer.mode = 'sequence';
 
@@ -256,7 +177,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
     const chunk = segmentQueue.shift();
 
     if (chunk === null) {
-      // null signals end of stream
+
       if (!sourceBuffer.updating && mediaSource.readyState === 'open') {
         try { mediaSource.endOfStream(); } catch(e) {}
       }
@@ -267,12 +188,11 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
     try {
       sourceBuffer.appendBuffer(chunk);
     } catch (err) {
-      console.error('â SourceBuffer append error:', err);
+      console.error('❌ SourceBuffer append error:', err);
       isAppending = false;
     }
   }
 
-  // Continuously fetch and transcode HLS segments
   let segmentIndex = 0;
   let knownSegments = [];
   let isLive = true;
@@ -281,42 +201,26 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
     try {
       const allSegments = await resolveHlsSegments(m3u8Url);
 
-      // Detect VOD vs live
       const res = await fetch(m3u8Url);
       const text = await res.text();
       isLive = !text.includes('#EXT-X-ENDLIST');
 
-      // Process only new segments
       const newSegments = allSegments.slice(segmentIndex);
 
       for (const segUrl of newSegments) {
         try {
           setFfmpegStatus(
-            'Transcoding MP2 â H.264/AAC',
-            `Segment ${segmentIndex + 1} â decoding MPEG-2...`,
+            'Transcoding MP2 → H.264/AAC',
+            `Segment ${segmentIndex + 1} — decoding MPEG-2...`,
             80
           );
 
-          // Fetch the raw .ts segment
           const segData = await fetchFile(segUrl);
 
-          // Write input to ffmpeg virtual filesystem
           const inputName = `in_${segmentIndex}.ts`;
           const outputName = `out_${segmentIndex}.mp4`;
           await ffmpeg.writeFile(inputName, segData);
 
-          // Transcode command:
-          //   -i input.ts                 input MPEG-TS
-          //   -c:v libx264               transcode MPEG-2 video â H.264
-          //   -preset ultrafast          minimize latency
-          //   -tune zerolatency          optimize for live streaming
-          //   -crf 23                    quality (lower = better, 18-28 typical)
-          //   -c:a aac                   transcode MP2 audio â AAC
-          //   -b:a 128k                  audio bitrate
-          //   -ar 44100                  resample audio to 44.1kHz (browser-safe)
-          //   -movflags frag_keyframe+empty_moov+default_base_moof
-          //                              produce fragmented MP4 for MSE
-          //   -f mp4                     output format
           await ffmpeg.exec([
             '-i', inputName,
             '-c:v', 'libx264',
@@ -331,20 +235,16 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
             outputName
           ]);
 
-          // Read transcoded output
           const outputData = await ffmpeg.readFile(outputName);
 
-          // Append to MSE queue
           segmentQueue.push(outputData.buffer);
           flushQueue();
 
-          // Clean up virtual FS to avoid memory bloat
           await ffmpeg.deleteFile(inputName);
           await ffmpeg.deleteFile(outputName);
 
           segmentIndex++;
 
-          // Show video element on first successful transcode
           if (segmentIndex === 1) {
             setFfmpegStatus('Playing', 'MP2 transcoding active via ffmpeg.wasm', 100);
             $('#loading-container').remove();
@@ -354,25 +254,25 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
           }
 
         } catch (segErr) {
-          console.error(`â Failed to transcode segment ${segmentIndex}:`, segErr);
-          segmentIndex++; // Skip failed segment and continue
+          console.error(`❌ Failed to transcode segment ${segmentIndex}:`, segErr);
+          segmentIndex++;
         }
       }
 
       if (isLive) {
-        // Poll for new segments every 3 seconds (typical HLS refresh interval)
+
         setTimeout(fetchAndTranscodeSegments, 3000);
       } else {
-        // VOD: signal end of stream after all segments processed
+
         segmentQueue.push(null);
         flushQueue();
         endOfStream = true;
-        console.log('â VOD transcode complete.');
+        console.log('✅ VOD transcode complete.');
       }
 
     } catch (err) {
-      console.error('â Segment fetch/processing error:', err);
-      // Retry after 5 seconds on live streams
+      console.error('❌ Segment fetch/processing error:', err);
+
       if (isLive) {
         setTimeout(fetchAndTranscodeSegments, 5000);
       }
@@ -382,17 +282,12 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
   fetchAndTranscodeSegments();
 }
 
-// ============================================================
-// Original page logic (unchanged from source)
-// ============================================================
-
     const M3U_URL = "http://iptvpro.ddns.net/tv_channels.m3u";
     let CHANNEL_NAME_MAP = {};
     let XMLTV_URL = null;
     let CURRENT_TVG_ID = null;
     let SCHEDULE_DATA = [];
 
-    // Time synchronization variables
     let TIME_OFFSET = 0;
     let LAST_TIME_SYNC = null;
 
@@ -405,24 +300,21 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
       });
     }
 
-    // Get accurate current time using time offset
     function getAccurateTime() {
       return new Date(Date.now() + TIME_OFFSET);
     }
 
-    // Update the clock display
     function updateClock() {
       const now = getAccurateTime();
-      const timeString = now.toLocaleTimeString([], { 
-        hour: '2-digit', 
-        minute: '2-digit', 
+      const timeString = now.toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
         second: '2-digit',
-        hour12: false 
+        hour12: false
       });
       document.getElementById('schedule-clock').textContent = timeString;
     }
 
-    // Format time remaining
     function formatTimeRemaining(ms) {
       const minutes = Math.floor(ms / 60000);
       if (minutes < 60) {
@@ -433,32 +325,30 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
       return `${hours}h ${remainingMinutes}m left`;
     }
 
-    // Sync time with WorldTimeAPI
     async function syncTime() {
       try {
         const before = Date.now();
         const response = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
         const after = Date.now();
-        
+
         if (!response.ok) throw new Error('Time sync failed');
-        
+
         const data = await response.json();
         const serverTime = new Date(data.utc_datetime).getTime();
         const latency = (after - before) / 2;
         const adjustedServerTime = serverTime + latency;
-        
+
         TIME_OFFSET = adjustedServerTime - after;
         LAST_TIME_SYNC = Date.now();
-        
-        console.log(`â Time synchronized. Offset: ${TIME_OFFSET}ms`);
-        
-        // Update clock and schedule display after time sync
+
+        console.log(`✅ Time synchronized. Offset: ${TIME_OFFSET}ms`);
+
         updateClock();
         if (SCHEDULE_DATA.length > 0) {
           renderSchedule();
         }
       } catch (error) {
-        console.warn('â ï¸ Time sync failed, using local time:', error);
+        console.warn('⚠️ Time sync failed, using local time:', error);
         TIME_OFFSET = 0;
       }
     }
@@ -468,12 +358,12 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
       $("#my-video").hide();
       $("#transcode-video").hide();
       $("#ffmpeg-status").hide();
-      $("#schedule-section").hide(); 
-      
+      $("#schedule-section").hide();
+
       $("#invalid-id-text").hide();
       $("#invalid-channel-name").hide();
       $("#error-main-text").hide();
-      $(".error-actions").hide(); 
+      $(".error-actions").hide();
       $(".error-actions-generic").hide();
 
       if (errorCode === "invalid_id" && invalidId) {
@@ -481,13 +371,13 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
           $("#invalid-id-text").show();
           $("#invalid-channel-name").show();
           $("#error-code-text").text(`Error Code: err_invalid_tvg_id`);
-          $(".error-actions").css('display', 'flex'); 
+          $(".error-actions").css('display', 'flex');
       } else {
-          $("#error-main-text").show(); 
+          $("#error-main-text").show();
           $("#error-main-text").html("An unexpected error has occurred. Please try refreshing the page. If the issue persists, please contact us.");
           $("#error-code-text").text("Error Code: err_code_" + (errorCode || "unknown"));
       }
-      
+
       $("#error-message").show();
     }
 
@@ -497,7 +387,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
             if (!response.ok) throw new Error("Failed to fetch M3U file");
             const data = await response.text();
             const lines = data.split(/\r?\n/);
-            
+
             let currentTvgId = null;
             let currentName = null;
 
@@ -506,7 +396,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
                     const epgUrlMatch = lines[i].match(/(?:url-tvg|x-tvg-url)="([^"]+)"/i);
                     if (epgUrlMatch && epgUrlMatch[1]) {
                         XMLTV_URL = epgUrlMatch[1];
-                        console.log(`â Dynamically loaded XMLTV URL: ${XMLTV_URL}`);
+                        console.log(`✅ Dynamically loaded XMLTV URL: ${XMLTV_URL}`);
                     }
                 }
 
@@ -518,20 +408,20 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
                     currentName = nameMatch ? nameMatch[1].trim() : "Unknown Channel";
                 } else if (lines[i].startsWith("http") && currentTvgId) {
                     const streamURL = lines[i].trim();
-                    CHANNEL_NAME_MAP[currentTvgId] = { 
-                        name: currentName, 
-                        url: streamURL 
+                    CHANNEL_NAME_MAP[currentTvgId] = {
+                        name: currentName,
+                        url: streamURL
                     };
-                    currentTvgId = null; 
+                    currentTvgId = null;
                     currentName = null;
                 }
             }
             if (!XMLTV_URL) {
-                console.warn("â ï¸ Could not find url-tvg or x-tvg-url in M3U header. Schedule may not load.");
+                console.warn("⚠️ Could not find url-tvg or x-tvg-url in M3U header. Schedule may not load.");
             }
-            console.log("â Channel Map built successfully.");
+            console.log("✅ Channel Map built successfully.");
         } catch (error) {
-            console.error("â Error building channel map:", error);
+            console.error("❌ Error building channel map:", error);
         }
     }
 
@@ -550,7 +440,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return await res.text();
       } catch (err) {
-        console.warn("â ï¸ Failed to detect timezone:", err);
+        console.warn("⚠️ Failed to detect timezone:", err);
         throw new Error("err_timezone");
       }
     }
@@ -566,14 +456,14 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
       const hour = cleanDigits.substring(8, 10);
       const minute = cleanDigits.substring(10, 12);
       const second = cleanDigits.substring(12, 14);
-      
+
       const isoString = `${year}-${month}-${day}T${hour}:${minute}:${second}.000Z`;
       return new Date(isoString);
     };
 
     function renderSchedule() {
       const scheduleList = document.getElementById("schedule-list");
-      
+
       if (SCHEDULE_DATA.length === 0) {
         return;
       }
@@ -590,7 +480,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
 
       let currentProgram = null;
       let nextProgram = null;
-      
+
       for (let i = 0; i < SCHEDULE_DATA.length; i++) {
         const item = SCHEDULE_DATA[i];
         if (item.startUTC <= now && item.stopUTC > now) {
@@ -612,7 +502,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
           month: 'short',
           day: 'numeric'
         }).format(item.startUTC);
-        
+
         if (!groupedByDay[localDate]) {
           groupedByDay[localDate] = [];
         }
@@ -644,7 +534,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
             timeZone: timezone
           }).format(item.stopUTC);
 
-          const episode = item.subtitle ? ` â ${item.subtitle}` : "";
+          const episode = item.subtitle ? ` — ${item.subtitle}` : "";
           const isCurrent = item === currentProgram;
           const isNext = item === nextProgram;
 
@@ -700,50 +590,50 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
 
     async function loadXMLTVSchedule(tvgId, silent = false) {
       const scheduleList = document.getElementById("schedule-list");
-      
+
       if (!silent) {
         scheduleList.innerHTML = "<p>Loading EPG schedule...</p>";
       }
 
       if (!XMLTV_URL) {
-        scheduleList.innerHTML = `<p>â ï¸ Cannot load schedule. XMLTV URL not found in M3U header (url-tvg or x-tvg-url).</p>`;
+        scheduleList.innerHTML = `<p>⚠️ Cannot load schedule. XMLTV URL not found in M3U header (url-tvg or x-tvg-url).</p>`;
         return;
       }
-      
+
       const xmltvUrl = XMLTV_URL;
-      
+
       let timezone = "UTC";
       try {
         timezone = await getUserTimezone();
       } catch (err) {
         if (!silent) {
-          scheduleList.innerHTML = `<p>â ï¸ Schedule shown in UTC as timezone detection failed.<br><strong>Error:</strong> ${err.message}</p>`;
+          scheduleList.innerHTML = `<p>⚠️ Schedule shown in UTC as timezone detection failed.<br><strong>Error:</strong> ${err.message}</p>`;
         }
       }
-      
+
       let xmlDoc;
       try {
         let xmlText = await fetchGzippedXML(xmltvUrl);
-        
+
         const safeXmlText = xmlText.replace(/&(?!(?:apos|quot|[gl]t|amp);)/g, '&amp;');
 
         const parser = new DOMParser();
         xmlDoc = parser.parseFromString(safeXmlText, "text/xml");
-        
+
         const errorNode = xmlDoc.querySelector('parsererror');
         if (errorNode) {
           console.error("XML Parsing Failed:", errorNode.textContent);
           throw new Error("XML Parsing Failed (Invalid XML Structure)");
         }
-        
+
       } catch (err) {
-        console.error("â Failed during XML fetch or parsing:", err.message);
+        console.error("❌ Failed during XML fetch or parsing:", err.message);
         if (!silent) {
           scheduleList.innerHTML = `<p>Unable to load or parse the XMLTV data from: ${xmltvUrl}<br><strong>Error:</strong> err_xml_fetch</p>`;
         }
         return;
       }
-      
+
       try {
         const targetChannelId = tvgId;
 
@@ -756,7 +646,7 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         }
 
         const programElements = xmlDoc.querySelectorAll(`programme[channel="${targetChannelId}"]`);
-        
+
         if (programElements.length === 0) {
           if (!silent) {
             scheduleList.innerHTML = `<p>No program entries found for this channel in the EPG file.</p>`;
@@ -767,12 +657,12 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         SCHEDULE_DATA = [];
         const now = getAccurateTime();
         const threeDaysAhead = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
-        
+
         programElements.forEach(program => {
           const startStr = program.getAttribute('start');
           const stopStr = program.getAttribute('stop');
           if (!startStr || !stopStr || startStr.length < 14 || stopStr.length < 14) return;
-          
+
           const startUTC = parseXmlTvDateFix(startStr);
           const stopUTC = parseXmlTvDateFix(stopStr);
 
@@ -790,15 +680,15 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
         SCHEDULE_DATA.sort((a, b) => a.startUTC - b.startUTC);
 
         if (!silent) {
-          console.log("â Schedule data loaded successfully.");
+          console.log("✅ Schedule data loaded successfully.");
         } else {
-          console.log("â Schedule data refreshed in background.");
+          console.log("✅ Schedule data refreshed in background.");
         }
-        
+
         renderSchedule();
 
       } catch (err) {
-        console.error("â Failed during XML processing/rendering:", err.message, err.stack);
+        console.error("❌ Failed during XML processing/rendering:", err.message, err.stack);
         if (!silent) {
           scheduleList.innerHTML = `<p>Unable to process or display the XMLTV data.<br><strong>Error Code:</strong> err_processing_xml_data</p>`;
         }
@@ -807,17 +697,17 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
 
     $(document).ready(async function () {
       await syncTime();
-      
+
       setInterval(updateClock, 1000);
       updateClock();
-      
+
       await buildChannelMap();
-      
+
       const urlParams = new URLSearchParams(window.location.search);
       const tvgId = urlParams.get('id');
-      
+
       if (!tvgId || tvgId.trim() === "") {
-        showError("invalid_id", "(No ID specified)"); 
+        showError("invalid_id", "(No ID specified)");
         return;
       }
 
@@ -827,21 +717,23 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
 
       if (!channelInfo) {
         showError("invalid_id", targetTvgId);
-        return; 
+        return;
       }
-      
+
       const channelName = channelInfo.name;
       document.title = `Watch ${channelName} Free Online - Free Live TV`;
       $('main h2').text(`Now Streaming: ${channelName}`);
       $('#schedule-title').text(`${channelName} Schedule`);
 
-      getStreamURL(targetTvgId, async function (streamURL) {
-        // Probe stream for MP2 codecs before deciding which player to use
-        console.log(`ð Probing stream for MP2 codecs: ${streamURL}`);
+      getStreamURL(targetTvgId, async function (rawStreamURL) {
+        const normalized = await normalizeStreamURL(rawStreamURL);
+        const streamURL = normalized.url;
+
+        console.log(`🔍 Probing stream for MP2 codecs: ${streamURL}`);
         const { needsTranscode, reason } = await probeStreamCodecs(streamURL);
 
         if (needsTranscode) {
-          console.log(`ð¬ MP2 codec detected (${reason}). Activating ffmpeg.wasm transcoder.`);
+          console.log(`🎬 MP2 codec detected (${reason}). Activating ffmpeg.wasm transcoder.`);
           $('#loading-container').hide();
           $('#ffmpeg-status').css('display', 'flex');
 
@@ -849,16 +741,15 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
           try {
             await startMp2Transcoding(streamURL, videoEl);
           } catch (err) {
-            console.error('â ffmpeg.wasm transcoding failed:', err);
+            console.error('❌ ffmpeg.wasm transcoding failed:', err);
             showError('ffmpeg_transcode_failed');
           }
         } else {
-          console.log(`â¶ï¸ No MP2 detected (${reason}). Using JWPlayer.`);
-          const n = await normalizeStreamURL(streamURL);
-          initializePlayer(n.url);
+          console.log(`▶️ No MP2 detected (${reason}). Using JWPlayer.`);
+          initializePlayer(streamURL);
         }
       });
-      
+
       await loadXMLTVSchedule(targetTvgId);
 
       setInterval(() => {
@@ -872,67 +763,57 @@ async function startMp2Transcoding(m3u8Url, videoEl) {
       setInterval(syncTime, 10 * 60 * 1000);
     });
 
-    
-// ============================================================
-// Stream URL normalization
-//
-// Resolves whatever URL is in the M3U entry into something hls.js can
-// actually play:
-//   - Real HLS playlists (`#EXTM3U` body) are returned using the FINAL
-//     post-redirect URL as the base, so relative segment/variant paths
-//     resolve against the actual streaming host instead of our own domain.
-//   - Bare-text indirections (a "playlist" whose body is just one raw URL)
-//     are followed, resolving relative paths against the fetched host.
-//   - True raw streams (server reports video/mp2t, or a raw URL with no
-//     further indirection) are wrapped in a synthetic single-segment VOD
-//     playlist so they still go through hls.js instead of a native
-//     <video> tag that can't decode raw MPEG-TS.
-// ============================================================
-
 async function normalizeStreamURL(streamURL, _depth) {
   const depth = _depth || 0;
-  if (depth > 5) return { url: streamURL }; // guard against redirect loops
+  if (depth > 5) return { url: streamURL };
 
   try {
     const r = await fetch(streamURL, { cache: "no-store" });
-    const finalUrl = r.url || streamURL; // URL AFTER following redirects
+    const finalUrl = r.url || streamURL;
     const ct = (r.headers.get("content-type") || "").toLowerCase();
 
-    // Server explicitly says it's a raw TS stream
     if (ct.includes("video/mp2t") || ct.includes("video/mpeg")) {
       return { url: makeSyntheticPlaylist(finalUrl) };
     }
 
-    const text = await r.text();
+    const text = (await r.text()).replace(/^\uFEFF/, "");
     const trimmed = text.trim();
 
     if (trimmed.startsWith("#EXTM3U")) {
-      // Genuine HLS playlist. Use the FINAL URL as the base so relative
-      // segment/variant paths inside it resolve against the real host.
+
       return { url: finalUrl };
     }
 
-    // Not HLS â likely a bare-text indirection (common with IPTV panels
-    // that serve a plain stream URL from an m3u entry).
+    if (trimmed.includes("#EXTINF")) {
+      const absolute = ("#EXTM3U\n" + trimmed)
+        .split(/\r?\n/)
+        .map(l => {
+          const line = l.trim();
+          return line && !line.startsWith("#") ? new URL(line, finalUrl).href : line;
+        })
+        .join("\n");
+      return {
+        url: URL.createObjectURL(
+          new Blob([absolute], { type: "application/vnd.apple.mpegurl" })
+        )
+      };
+    }
+
     const lines = text.split(/\r?\n/).map(x => x.trim()).filter(x => x && !x.startsWith("#"));
     if (lines.length === 1) {
       const resolved = new URL(lines[0], finalUrl).href;
       if (resolved.toLowerCase().includes(".m3u8")) {
-        return normalizeStreamURL(resolved, depth + 1); // follow the chain
+        return normalizeStreamURL(resolved, depth + 1);
       }
       return { url: makeSyntheticPlaylist(resolved) };
     }
 
-    // Fallback: unrecognized multi-line, non-HLS body â just pass through.
     return { url: finalUrl };
   } catch (e) {
     return { url: streamURL };
   }
 }
 
-// Wraps a bare stream URL (e.g. a raw .ts endpoint) in a minimal VOD-style
-// HLS playlist so hls.js can fetch/demux it like any normal segment,
-// instead of handing raw MPEG-TS to a native <video> tag that can't play it.
 function makeSyntheticPlaylist(rawUrl) {
   const playlist =
 `#EXTM3U
@@ -966,13 +847,12 @@ function initializePlayer(streamURL) {
         }
       }, 12000);
 
-      // Force-reveal after a few seconds regardless of player events
       const forceRevealTimer = setTimeout(function() {
         if ($("#loading-container").length) {
           console.warn("Forcing player reveal after timeout — events may not have fired.");
           revealPlayer();
         }
-      }, 4000); // adjust delay as needed
+      }, 4000);
 
       function revealPlayer() {
         clearTimeout(stallTimer);
@@ -1000,7 +880,7 @@ function initializePlayer(streamURL) {
 
       player.on("error", function (e) {
         console.error("Player error:", e.message || e);
-        showError(e.code || "unknown"); 
+        showError(e.code || "unknown");
       });
 
       jwplayer_hls_provider.attach();
