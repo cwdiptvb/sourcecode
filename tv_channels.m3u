@@ -42,8 +42,7 @@ http://stream.cammonitorplus.net/1798/index.m3u8
 #EXTINF:-1 tvg-id="CBS.East.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/us-local/cbs-2-wcbs-us.png" tvg-name="CBS (WCBS) New York NY" group-title="News",CBS (WCBS) New York NY
 http://4.30.180.36:8420/cbs/index.m3u8?token=test
 #EXTINF:-1 tvg-id="CBS.Sports.Network.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/cbs-sports-network-us.png" tvg-name="CBS Sports Network" group-title="Sports",CBS Sports Network
-https://gpuserver3.tier1streams.com/CBS_SPORTS_NETWORK/index.m3u8
-#EXTINF:-1 tvg-id="CHSN.Chicago.Sports.Network.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/chicago-sports-network-us.png" tvg-name="Chicago Sports Network" group-title="Sports",Chicago Sports Network
+https://cbsplaylistserver.aws.syncbak.com/mpl/20160401/853636/3659760/media.m3u8?request_token=oQv0lrfvomGPaWk1dewm-FIW9V1U6ZrWHhhguU1Mzwq4itZ95dm7P_8K2NCD30f-qSLZG0XfQ_iPkTIGmlJON7M-X1m1yoaDWutJCf0LKaZqwQkMjieEMhDDr6hFGGoyVz1Dc8YCWb38SBaYyzab5O8U1M4n2D0WttuBUvasUXKRMjU?wmsAuthSign=GZAClPSpuqxHtmUUCwibcExpTrgccUdq8r1LjDbluEh9WIXLgWp3fcKPQ8FxKhrk#EXTINF:-1 tvg-id="CHSN.Chicago.Sports.Network.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/chicago-sports-network-us.png" tvg-name="Chicago Sports Network" group-title="Sports",Chicago Sports Network
 http://206.212.244.63/6141/index.m3u8
 #EXTINF:-1 tvg-id="Cinemax.HD.us2" tvg-logo="https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-states/cinemax-us.png" tvg-name="Cinemax" group-title="Movies",Cinemax
 https://gpuserver3.tier1streams.com/CINEMAX_EAST/index.m3u8
