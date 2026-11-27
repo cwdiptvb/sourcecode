@@ -796,6 +796,13 @@ footer {
     // Re-sync time every 10 minutes
     setInterval(syncTime, 10 * 60 * 1000);
   });
+  if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => console.log('Service Worker registered:', reg.scope))
+          .catch((err) => console.error('Service Worker failed:', err));
+      });
+  }
 </script>
 </body>
 </html>
