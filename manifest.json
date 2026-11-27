@@ -1,6 +1,6 @@
 {
   "name": "Free Live TV",
-  "short_name": "iptvpro",
+  "short_name": "Free Live TV",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#000000",
